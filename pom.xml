@@ -45,7 +45,7 @@
                                     <include>org.bstats:bstats-base</include>
                                     <include>org.bstats:bstats-bukkit</include>
                                     <include>org.inventivetalent.spiget-update</include>
-                                    <include>net.kyori:*</include>
+                                    <include>net.kyori:adventure-text-minimessage</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -56,10 +56,6 @@
                                 <relocation>
                                     <pattern>org.inventivetalent.update.spiget</pattern>
                                     <shadedPattern>de.erethon.bedrock.spiget</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.kyori</pattern>
-                                    <shadedPattern>de.erethon.bedrock.kyori</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -80,8 +76,8 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <id>paper</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
