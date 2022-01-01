@@ -12,8 +12,6 @@ import java.util.Set;
  */
 public class EPluginSettings {
 
-    private final boolean spigot;
-    private final boolean paper;
     private final boolean economy;
     private final boolean permissions;
     private final boolean metrics;
@@ -22,10 +20,8 @@ public class EPluginSettings {
     private final Set<Internals> internals;
     private final VersionComparator versionComparator;
 
-    public EPluginSettings(boolean spigot, boolean paper, boolean economy, boolean permissions, boolean metrics, int spigotMCResourceId,
+    public EPluginSettings(boolean economy, boolean permissions, boolean metrics, int spigotMCResourceId,
                            int bStatsResourceId, Set<Internals> internals, VersionComparator versionComparator) {
-        this.spigot = spigot;
-        this.paper = paper;
         this.economy = economy;
         this.permissions = permissions;
         this.metrics = metrics;
@@ -33,20 +29,6 @@ public class EPluginSettings {
         this.spigotMCResourceId = spigotMCResourceId;
         this.bStatsResourceId = bStatsResourceId;
         this.versionComparator = versionComparator;
-    }
-
-    /**
-     * @return if this plugin requires the Spigot API
-     */
-    public boolean requiresSpigot() {
-        return spigot;
-    }
-
-    /**
-     * @return if this plugin requires the PaperSpigot API
-     */
-    public boolean requiresPaper() {
-        return paper;
     }
 
     /**
@@ -116,8 +98,6 @@ public class EPluginSettings {
 
     public static class Builder {
 
-        private boolean spigot = false;
-        private boolean paper = false;
         private boolean economy = false;
         private boolean permissions = false;
         private boolean metrics = false;
@@ -127,16 +107,6 @@ public class EPluginSettings {
         private VersionComparator versionComparator = VersionComparator.SEM_VER;
 
         Builder() {
-        }
-
-        public Builder spigot(boolean spigot) {
-            this.spigot = spigot;
-            return this;
-        }
-
-        public Builder paper(boolean paper) {
-            this.paper = paper;
-            return this;
         }
 
         public Builder economy(boolean economy) {
@@ -180,7 +150,7 @@ public class EPluginSettings {
         }
 
         public EPluginSettings build() {
-            return new EPluginSettings(spigot, paper, economy, permissions, metrics, spigotMCResourceId, bStatsResourceId, internals, versionComparator);
+            return new EPluginSettings(economy, permissions, metrics, spigotMCResourceId, bStatsResourceId, internals, versionComparator);
         }
     }
 
