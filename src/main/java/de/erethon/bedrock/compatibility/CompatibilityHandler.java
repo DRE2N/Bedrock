@@ -22,19 +22,6 @@ public class CompatibilityHandler {
     }
 
     /**
-     * Creates a new instance if the statically saved instance is null
-     *
-     * @return the CompatibilityHandler instance
-     */
-    public static CompatibilityHandler getInstance() {
-        if (instance == null) {
-            new CompatibilityHandler();
-        }
-
-        return instance;
-    }
-
-    /**
      * Returns the Minecraft version
      *
      * @return the Minecraft version
@@ -68,6 +55,20 @@ public class CompatibilityHandler {
      */
     public boolean isPaper() {
         return paper;
+    }
+
+    /* statics */
+
+    /**
+     * Creates a new instance if the statically saved instance is null
+     *
+     * @return the CompatibilityHandler instance
+     */
+    public static CompatibilityHandler getInstance() {
+        if (instance == null) {
+            new CompatibilityHandler();
+        }
+        return instance;
     }
 
 }

@@ -182,7 +182,6 @@ public class EPluginSettings {
         public EPluginSettings build() {
             return new EPluginSettings(spigot, paper, economy, permissions, metrics, spigotMCResourceId, bStatsResourceId, internals, versionComparator);
         }
-
     }
 
 }
