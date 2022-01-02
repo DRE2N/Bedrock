@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,8 +79,32 @@ public class MessageUtil {
     }
 
     /**
+     * Broadcasts a message to all players. Supports color codes.
+     *
+     * @param filter  the player filter
+     * @param message the message String
+     */
+    public static void broadcastMessageIf(String message, Predicate<Player> filter) {
+        broadcastMessageIf(parse(message), filter);
+    }
+
+    /**
+     * Broadcasts the Component to all players.
+     *
+     * @param filter  the player filter
+     * @param message the message component
+     */
+    public static void broadcastMessageIf(Component message, Predicate<Player> filter) {
+        Bukkit.getOnlinePlayers().forEach((p) -> {
+            if (filter.test(p)) {
+                sendMessage(p, message);
+            }
+        });
+    }
+
+    /**
      * Broadcasts a perfectly centered message to all players. Supports color codes.
-     * (Component formatting like <COLOR> or <rainbow> can cause to issues)
+     * (Component formatting like <COLOR> or <rainbow> can cause issues)
      *
      * @param message the message String
      */
@@ -89,12 +114,34 @@ public class MessageUtil {
 
     /**
      * Broadcasts a perfectly centered Component message to all players.
-     * (Component formatting like <COLOR> or <rainbow> can cause to issues)
+     * (Component formatting like <COLOR> or <rainbow> can cause issues)
      *
      * @param message the message String
      */
     public static void broadcastCenteredMessage(Component message) {
         broadcastCenteredMessage(serialize(message));
+    }
+
+    /**
+     * Broadcasts a perfectly centered message to all players. Supports color codes.
+     * (Component formatting like <COLOR> or <rainbow> can cause issues)
+     *
+     * @param filter  the player filter
+     * @param message the message String
+     */
+    public static void broadcastCenteredMessageIf(String message, Predicate<Player> filter) {
+        broadcastMessageIf(DefaultFontInfo.center(message), filter);
+    }
+
+    /**
+     * Broadcasts a perfectly centered Component message to all players.
+     * (Component formatting like <COLOR> or <rainbow> can cause issues)
+     *
+     * @param filter  the player filter
+     * @param message the message String
+     */
+    public static void broadcastCenteredMessageIf(Component message, Predicate<Player> filter) {
+        broadcastCenteredMessageIf(serialize(message), filter);
     }
 
     /**
@@ -104,6 +151,16 @@ public class MessageUtil {
      */
     public static void broadcastPluginTag(Plugin plugin) {
         broadcastCenteredMessage(getPluginTag(plugin));
+    }
+
+    /**
+     * Broadcasts the plugin name formatted to a player (or another sender), for example as a headline.
+     *
+     * @param filter the player filter
+     * @param plugin the plugin
+     */
+    public static void broadcastPluginTagIf(Plugin plugin, Predicate<Player> filter) {
+        broadcastCenteredMessageIf(getPluginTag(plugin), filter);
     }
 
     /**
@@ -135,7 +192,46 @@ public class MessageUtil {
      * @param title the message of the first, big line
      */
     public static void broadcastTitleMessage(String title) {
-        broadcastTitleMessage(title, "", 20, 60, 20);
+        broadcastTitleMessage(title, "");
+    }
+
+    /**
+     * Broadcasts a title message. Supports color codes.
+     *
+     * @param title    the message of the first, big line
+     * @param subtitle the message of the second, small line
+     * @param fadeIn   the time in ticks it takes for the message to appear
+     * @param show     the time in ticks how long the message will be visible
+     * @param fadeOut  the time in ticks it takes for the message to disappear
+     * @param filter   the player filter
+     */
+    public static void broadcastTitleMessageIf(String title, String subtitle, int fadeIn, int show, int fadeOut, Predicate<Player> filter) {
+        Bukkit.getOnlinePlayers().forEach((p) -> {
+            if (filter.test(p)) {
+                sendTitleMessage(p, title, subtitle, fadeIn, show, fadeOut);
+            }
+        });
+    }
+
+    /**
+     * Broadcasts a title message. Supports color codes.
+     *
+     * @param title    the message of the first, big line
+     * @param subtitle the message of the second, small line
+     * @param filter   the player filter
+     */
+    public static void broadcastTitleMessageIf(String title, String subtitle, Predicate<Player> filter) {
+        broadcastTitleMessageIf(title, subtitle, 20, 60, 20, filter);
+    }
+
+    /**
+     * Broadcasts a title message. Supports color codes.
+     *
+     * @param title    the message of the first, big line
+     * @param filter   the player filter
+     */
+    public static void broadcastTitleMessageIf(String title, Predicate<Player> filter) {
+        broadcastTitleMessageIf(title, "", filter);
     }
 
     /**
@@ -157,6 +253,28 @@ public class MessageUtil {
     }
 
     /**
+     * Broadcasts an action bar message. Supports color codes.
+     *
+     * @param message the message String
+     */
+    public static void broadcastActionBarMessageIf(String message, Predicate<Player> filter) {
+        broadcastActionBarMessageIf(parse(message), filter);
+    }
+
+    /**
+     * Broadcasts an action bar message.
+     *
+     * @param message the message components
+     */
+    public static void broadcastActionBarMessageIf(Component message, Predicate<Player> filter) {
+        Bukkit.getOnlinePlayers().forEach((p) -> {
+            if (filter.test(p)) {
+                sendActionBarMessage(p, message);
+            }
+        });
+    }
+
+    /**
      * Broadcasts a fat message Does not support color codes.
      *
      * @param color the color of the message
@@ -168,6 +286,29 @@ public class MessageUtil {
         String[] fat = FatLetter.fromString(word);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            sendCenteredMessage(player, color + fat[0]);
+            sendCenteredMessage(player, (color + fat[1]));
+            sendCenteredMessage(player, (color + fat[2]));
+            sendCenteredMessage(player, (color + fat[3]));
+            sendCenteredMessage(player, (color + fat[4]));
+        }
+    }
+
+    /**
+     * Broadcasts a fat message Does not support color codes.
+     *
+     * @param color the color of the message
+     * @param word  the word to send
+     */
+    public static void broadcastFatMessageIf(ChatColor color, String word, Predicate<Player> filter) {
+        word = ChatColor.translateAlternateColorCodes('&', word);
+        word = ChatColor.stripColor(word);
+        String[] fat = FatLetter.fromString(word);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!filter.test(player)) {
+                continue;
+            }
             sendCenteredMessage(player, color + fat[0]);
             sendCenteredMessage(player, (color + fat[1]));
             sendCenteredMessage(player, (color + fat[2]));
