@@ -483,6 +483,18 @@ public class MessageUtil {
      * <p>
      * Translates color codes and MiniMessage tags
      *
+     * @param msg the message to parse
+     * @return the parsed Component
+     */
+    public static Component parseAndFix(String msg) {
+        return parseAndFix(mm, msg);
+    }
+
+    /**
+     * Parses the string and applies {@link MessageUtil#fixColor(String msg)} on it.
+     * <p>
+     * Translates color codes and MiniMessage tags
+     *
      * @param mm the MiniMessage instance to use
      * @param msg the message to parse
      * @return the parsed Component
