@@ -474,6 +474,20 @@ public class MessageUtil {
      * @return the parsed Component
      */
     public static Component parse(MiniMessage mm, String msg) {
+        String translated = ChatColor.translateAlternateColorCodes('&', msg);
+        return mm.parse(translated);
+    }
+
+    /**
+     * Parses the string and applies {@link MessageUtil#fixColor(String msg)} on it.
+     * <p>
+     * Translates color codes and MiniMessage tags
+     *
+     * @param mm the MiniMessage instance to use
+     * @param msg the message to parse
+     * @return the parsed Component
+     */
+    public static Component parseAndFix(MiniMessage mm, String msg) {
         String fixed = fixColor(msg);
         String translated = ChatColor.translateAlternateColorCodes('&', fixed);
         return mm.parse(translated);
