@@ -59,7 +59,7 @@ public class EnumUtil {
      * @return the converted enum name
      */
     public static String getConvertedName(Enum<?> anEnum) {
-        char[] charArray = anEnum.name().toLowerCase().toCharArray();
+        char[] charArray = anEnum.name().replace('_', ' ').toLowerCase().toCharArray();
         boolean foundSpace = true;
 
         for(int i = 0; i < charArray.length; i++) {
