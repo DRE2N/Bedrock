@@ -118,13 +118,11 @@ public abstract class ECommand {
                 ECommand command = this.subCommands.getCommand(argsCopy[0]);
 
                 if (command != null) {
-                    if (sender instanceof Player) {
-                        Player player = (Player)sender;
+                    if (sender instanceof Player player) {
                         if (!command.isPlayerCommand()) {
                             MessageUtil.sendMessage(player, BedrockMessage.CMD_NO_PLAYER_COMMAND.getMessage());
                             return;
                         }
-
                         if (!command.senderHasPermissions(player)) {
                             MessageUtil.sendMessage(player, BedrockMessage.CMD_NO_PERMISSION.getMessage());
                             return;
@@ -135,12 +133,10 @@ public abstract class ECommand {
                             return;
                         }
                     }
-
                     if (!(command.getMinArgs() <= argsCopy.length - 1 & command.getMaxArgs() >= argsCopy.length - 1) && command.getMinArgs() != -1) {
                         command.displayHelp(sender);
                         return;
                     }
-
                     command.execute(argsCopy, sender);
                     return;
                 }

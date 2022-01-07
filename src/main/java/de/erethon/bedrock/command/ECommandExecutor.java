@@ -30,16 +30,13 @@ public class ECommandExecutor implements CommandExecutor {
 
             if (command != null) {
                 if (sender instanceof Player player) {
-
                     if (!command.isPlayerCommand()) {
                         MessageUtil.sendMessage(player, BedrockMessage.CMD_NO_PLAYER_COMMAND.getMessage());
                         return false;
-
-                    } else if (command.getPermission() != null) {
-                        if (!command.senderHasPermissions(player)) {
-                            MessageUtil.sendMessage(player, BedrockMessage.CMD_NO_PERMISSION.getMessage());
-                            return false;
-                        }
+                    }
+                    if (!command.senderHasPermissions(player)) {
+                        MessageUtil.sendMessage(player, BedrockMessage.CMD_NO_PERMISSION.getMessage());
+                        return false;
                     }
                 } else {
                     if (!command.isConsoleCommand()) {
@@ -47,7 +44,6 @@ public class ECommandExecutor implements CommandExecutor {
                         return false;
                     }
                 }
-
                 if (command.getMinArgs() <= args.length - 1 & command.getMaxArgs() >= args.length - 1 || command.getMinArgs() == -1) {
                     command.execute(args, sender);
                 } else {

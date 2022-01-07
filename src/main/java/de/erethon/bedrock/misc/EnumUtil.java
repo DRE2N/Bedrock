@@ -1,7 +1,7 @@
 package de.erethon.bedrock.misc;
 
 /**
- * @author Daniel Saukel
+ * @author Daniel Saukel, Fyreum
  */
 public class EnumUtil {
 
@@ -48,6 +48,31 @@ public class EnumUtil {
         } catch (IllegalArgumentException exception) {
             return null;
         }
+    }
+
+    /**
+     * Returns the converted enum name.
+     * The name will be split into parts for each underscore found.
+     * Each separated part will start with an uppercase letter, the rest is lowercase.
+     *
+     * @param anEnum the enum to convert name from
+     * @return the converted enum name
+     */
+    public static String getConvertedName(Enum<?> anEnum) {
+        char[] charArray = anEnum.name().toLowerCase().toCharArray();
+        boolean foundSpace = true;
+
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            } else {
+                foundSpace = true;
+            }
+        }
+        return String.valueOf(charArray);
     }
 
 }
