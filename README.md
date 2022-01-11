@@ -1,5 +1,7 @@
 # Bedrock
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/158b774a4d4b4a7a9368af58f96d5dd9)](https://app.codacy.com/gh/DRE2N/Bedrock?utm_source=github.com&utm_medium=referral&utm_content=DRE2N/Bedrock&utm_campaign=Badge_Grade_Settings)
+
 Core library for Bukkit plugins of DRE2N, containing commands, configurations, user caching and more.
 
 ## Features
