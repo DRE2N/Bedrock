@@ -1,7 +1,7 @@
 package de.erethon.bedrock.config;
 
+import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.misc.FileUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -97,7 +97,7 @@ public class MessageHandler {
      *         a placeholder, if the configuration is erroneous.
      */
     public String getMessage(String language, Message message) {
-        return ChatColor.translateAlternateColorCodes('&', getRaw(language, message));
+        return MessageUtil.translateColors(getRaw(language, message));
     }
 
     /**

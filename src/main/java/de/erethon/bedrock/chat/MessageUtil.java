@@ -281,7 +281,7 @@ public class MessageUtil {
      * @param word  the word to send
      */
     public static void broadcastFatMessage(ChatColor color, String word) {
-        word = ChatColor.translateAlternateColorCodes('&', word);
+        word = translateColors(word);
         word = ChatColor.stripColor(word);
         String[] fat = FatLetter.fromString(word);
 
@@ -301,7 +301,7 @@ public class MessageUtil {
      * @param word  the word to send
      */
     public static void broadcastFatMessageIf(ChatColor color, String word, Predicate<Player> filter) {
-        word = ChatColor.translateAlternateColorCodes('&', word);
+        word = translateColors(word);
         word = ChatColor.stripColor(word);
         String[] fat = FatLetter.fromString(word);
 
@@ -442,7 +442,7 @@ public class MessageUtil {
      * @param word   the word to send
      */
     public static void sendFatMessage(Player player, ChatColor color, String word) {
-        word = ChatColor.translateAlternateColorCodes('&', word);
+        word = translateColors(word);
         word = ChatColor.stripColor(word);
         String[] fat = FatLetter.fromString(word);
         sendCenteredMessage(player, color + fat[0]);
@@ -474,34 +474,7 @@ public class MessageUtil {
      * @return the parsed Component
      */
     public static Component parse(MiniMessage mm, String msg) {
-        String translated = ChatColor.translateAlternateColorCodes('&', msg);
-        return mm.parse(translated);
-    }
-
-    /**
-     * Parses the string and applies {@link MessageUtil#fixColor(String msg)} on it.
-     * <p>
-     * Translates color codes and MiniMessage tags
-     *
-     * @param msg the message to parse
-     * @return the parsed Component
-     */
-    public static Component parseAndFix(String msg) {
-        return parseAndFix(mm, msg);
-    }
-
-    /**
-     * Parses the string and applies {@link MessageUtil#fixColor(String msg)} on it.
-     * <p>
-     * Translates color codes and MiniMessage tags
-     *
-     * @param mm the MiniMessage instance to use
-     * @param msg the message to parse
-     * @return the parsed Component
-     */
-    public static Component parseAndFix(MiniMessage mm, String msg) {
-        String fixed = fixColor(msg);
-        String translated = ChatColor.translateAlternateColorCodes('&', fixed);
+        String translated = translateColors(msg);
         return mm.parse(translated);
     }
 
@@ -536,45 +509,6 @@ public class MessageUtil {
     }
 
     /**
-     * Fixes missing color codes due to MiniMessage formatting with '<' and '>'.
-     * <p>
-     * MiniMessage has erroneous formatting which causes to missing color codes in strings.
-     * So unused formatting chars like '<' and '>' would be white, no matter of the correct color given.
-     *
-     * @param msg the message to fix
-     * @return the fixes string
-     */
-    public static String fixColor(String msg) {
-        char[] chars = msg.toCharArray();
-        ChatColor color = null;
-
-        for (int i = 0; i < chars.length -2; i++) {
-            char current = chars[i];
-            int nextIndex = i + 1;
-            if (current == '&' | current == ChatColor.COLOR_CHAR) {
-                char next = chars[nextIndex];
-                ChatColor newColor = ChatColor.getByChar(next);
-                if (newColor != null) {
-                    color = newColor;
-                }
-            }
-            if (color == null) {
-                continue;
-            }
-            if (chars[nextIndex + 1] != '<') {
-                continue;
-            }
-            String start = msg.substring(0, nextIndex);
-            String subString = msg.substring(nextIndex).replaceFirst(">", ">&" + color.getChar());
-
-            msg = start + subString;
-            chars = msg.toCharArray();
-            i = nextIndex + 1;
-        }
-        return msg;
-    }
-
-    /**
      * Colors the string.
      * <p>
      * Translates color codes and in 1.16+ hex color as well.
@@ -589,6 +523,10 @@ public class MessageUtil {
             string = string.replace(color, net.md_5.bungee.api.ChatColor.of(color) + "");
             match = HEX_COLOR_PATTERN.matcher(string);
         }
+        return translateColors(string);
+    }
+
+    public static String translateColors(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
 

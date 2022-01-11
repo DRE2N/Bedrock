@@ -1,7 +1,6 @@
 package de.erethon.bedrock.chat;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 
 /**
  * @author SirSpoodles, Sataniel, Fyreum
@@ -157,7 +156,7 @@ public enum DefaultFontInfo {
      * Method to add spaces to a String to show up in the middle of the chat
      */
     public static String center(String message) {
-        return getCenterSpaces(message) + ChatColor.translateAlternateColorCodes('&', message);
+        return getCenterSpaces(message) + MessageUtil.translateColors(message);
     }
 
     /**
@@ -171,7 +170,7 @@ public enum DefaultFontInfo {
         if (message == null || message.isEmpty()) {
             return "";
         }
-        message = ChatColor.translateAlternateColorCodes('&', message);
+        message = MessageUtil.translateColors( message);
 
         int messagePxSize = 0;
         boolean previousCode = false;

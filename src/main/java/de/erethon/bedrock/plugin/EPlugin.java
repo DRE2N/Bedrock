@@ -22,6 +22,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * @author Sataniel, Fyreum
+ */
 public class EPlugin extends JavaPlugin {
 
     private static EPlugin instance;
