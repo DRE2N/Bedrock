@@ -51,9 +51,12 @@ public class ConfigUtil {
     public static <T> List<T> getList(ConfigurationSection config, String path, Class<T> type) {
         List<?> list = config.getList(path);
         List<T> finalList = new ArrayList<>();
+        if (list == null) {
+            return finalList;
+        }
         for (Object o : list) {
             if (type.isInstance(o)) {
-                finalList.add((T) o);
+                finalList.add(type.cast(o));
             }
         }
         return finalList;
