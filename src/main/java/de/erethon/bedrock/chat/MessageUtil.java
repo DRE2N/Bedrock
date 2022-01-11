@@ -526,6 +526,12 @@ public class MessageUtil {
         return translateColors(string);
     }
 
+    /**
+     * Translates alternate color codes in the string.
+     *
+     * @param string the String to translate
+     * @return the translated string
+     */
     public static String translateColors(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
