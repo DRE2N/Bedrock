@@ -24,16 +24,23 @@ public interface LoadableUser {
     void saveUser();
 
     /**
-     * This method is called when a player joins.
+     * This method is called when the player joins.
      */
     default void onJoin(PlayerJoinEvent event) {
 
     }
 
     /**
-     * This method is called when a player quits.
+     * This method is called when the player quits.
      */
     default void onQuit(PlayerQuitEvent event) {
+
+    }
+
+    /**
+     * This method is called when the player gets unloaded.
+     */
+    default void onUnload() {
 
     }
 }

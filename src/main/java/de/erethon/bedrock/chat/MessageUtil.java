@@ -475,7 +475,7 @@ public class MessageUtil {
      */
     public static Component parse(MiniMessage mm, String msg) {
         String translated = translateColors(msg);
-        return mm.parse(translated);
+        return mm.deserialize(translated);
     }
 
     /**

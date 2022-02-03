@@ -7,7 +7,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,15 +26,20 @@ import java.util.UUID;
  */
 public abstract class UserCacheLoader<USER extends LoadableUser> implements Listener {
 
+    private final Plugin plugin;
     private final Map<String, UUID> nameToId;
     private final Map<UUID, USER> idToUser;
+    private final Map<UUID, BukkitTask> idToTask;
+    private long unloadAfter = 60*20; // seconds
 
     /**
      * @param plugin the plugin to register the listener with
      */
     public UserCacheLoader(JavaPlugin plugin) {
+        this.plugin = plugin;
         this.nameToId = new HashMap<>();
         this.idToUser = new HashMap<>();
+        this.idToTask = new HashMap<>();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -171,6 +178,24 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
         return idToUser.size();
     }
 
+    /**
+     * Returns the duration after which an offline player gets unloaded.
+     *
+     * @return the duration after which an offline player gets unloaded
+     */
+    public long getUnloadAfter() {
+        return unloadAfter;
+    }
+
+    /**
+     * Set the duration after which an offline player gets unloaded.
+     *
+     * @param unloadAfter the duration
+     */
+    public void setUnloadAfter(long unloadAfter) {
+        this.unloadAfter = unloadAfter;
+    }
+
     /* abstracts */
 
     /**
@@ -189,8 +214,14 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+        BukkitTask kickTask = idToTask.get(uuid);
 
-        USER user = idToUser.get(player.getUniqueId());
+        if (kickTask != null) {
+            kickTask.cancel();
+            idToTask.remove(uuid);
+        }
+        USER user = idToUser.get(uuid);
         if (user != null) {
             user.updatePlayer(player);
             user.onJoin(event);
@@ -207,6 +238,14 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
         if (user != null) {
             user.onQuit(event);
         }
-        unload(player);
+        if (unloadAfter < 0) {
+            return;
+        }
+        if (unloadAfter == 0) {
+            unload(player);
+            return;
+        }
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> unload(player), unloadAfter);
+        idToTask.put(player.getUniqueId(), task);
     }
 }
