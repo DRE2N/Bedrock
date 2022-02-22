@@ -23,7 +23,7 @@ public enum BedrockMessage implements Message {
 
     static {
         Plugin plugin = EPlugin.getInstance();
-        File dest = new File(plugin.getDataFolder().getParent() + "/Bedrocks", "messages.yml");
+        File dest = new File(plugin.getDataFolder().getParent() + "/Bedrock", "messages.yml");
         if (!dest.exists()) {
             dest.getParentFile().mkdir();
             plugin.saveResource("messages.yml", false);

@@ -43,7 +43,7 @@ public class BedrockConfig extends EConfig {
 
     public static BedrockConfig getInstance() {
         if (instance == null) {
-            instance = new BedrockConfig(new File(EPlugin.getInstance().getDataFolder().getParent() + "/Bedrocks", "config.yml"));
+            instance = new BedrockConfig(new File(EPlugin.getInstance().getDataFolder().getParent() + "/Bedrock", "config.yml"));
         }
         return instance;
     }
