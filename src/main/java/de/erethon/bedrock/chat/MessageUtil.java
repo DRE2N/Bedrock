@@ -489,13 +489,13 @@ public class MessageUtil {
     }
 
     /**
-     * Calls the {@link MiniMessage#stripTokens(String input)} method.
+     * Calls the {@link MiniMessage#stripTags(String input)} method.
      *
      * @param input the string to strip
      * @return the striped input
      */
     public static String stripTokens(String input) {
-        return mm.stripTokens(input);
+        return mm.stripTags(input);
     }
 
     /**
