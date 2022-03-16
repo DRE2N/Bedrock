@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -19,7 +18,6 @@ import java.util.regex.Pattern;
 public class MessageUtil {
 
     private static final MiniMessage mm = MiniMessage.miniMessage();
-    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)&[0-9A-FK-ORX]");
 
     /**
@@ -38,7 +36,7 @@ public class MessageUtil {
      * @param message the message String
      */
     public static void log(Plugin plugin, String message) {
-        Bukkit.getConsoleSender().sendMessage("[" + plugin.getName() + "] " + color(message));
+        log(plugin, parse(message));
     }
 
     /**
@@ -281,7 +279,7 @@ public class MessageUtil {
      * @param word  the word to send
      */
     public static void broadcastFatMessage(ChatColor color, String word) {
-        word = translateColors(word);
+        word = replaceLegacyChars(word);
         word = ChatColor.stripColor(word);
         String[] fat = FatLetter.fromString(word);
 
@@ -301,7 +299,7 @@ public class MessageUtil {
      * @param word  the word to send
      */
     public static void broadcastFatMessageIf(ChatColor color, String word, Predicate<Player> filter) {
-        word = translateColors(word);
+        word = replaceLegacyChars(word);
         word = ChatColor.stripColor(word);
         String[] fat = FatLetter.fromString(word);
 
@@ -442,7 +440,7 @@ public class MessageUtil {
      * @param word   the word to send
      */
     public static void sendFatMessage(Player player, ChatColor color, String word) {
-        word = translateColors(word);
+        word = replaceLegacyChars(word);
         word = ChatColor.stripColor(word);
         String[] fat = FatLetter.fromString(word);
         sendCenteredMessage(player, color + fat[0]);
@@ -474,7 +472,7 @@ public class MessageUtil {
      * @return the parsed Component
      */
     public static Component parse(MiniMessage mm, String msg) {
-        String translated = translateColors(msg);
+        String translated = replaceLegacyChars(msg);
         return mm.deserialize(translated);
     }
 
@@ -509,31 +507,16 @@ public class MessageUtil {
     }
 
     /**
-     * Colors the string.
-     * <p>
-     * Translates color codes and in 1.16+ hex color as well.
+     * Replace legacy chat color chars with matching {@link MiniMessage} tags.
      *
-     * @param string the String to parse
-     * @return the colored string
+     * @param string the String to replace
+     * @return the replaced string
      */
-    public static String color(String string) {
-        Matcher match = HEX_COLOR_PATTERN.matcher(string);
-        while (match.find()) {
-            String color = string.substring(match.start(), match.end());
-            string = string.replace(color, net.md_5.bungee.api.ChatColor.of(color) + "");
-            match = HEX_COLOR_PATTERN.matcher(string);
+    public static String replaceLegacyChars(String string) {
+        for (ChatColor color : ChatColor.values()) {
+            string = string.replace("&" + color.getChar(), "<" + color.name().toLowerCase() + ">");
         }
-        return translateColors(string);
-    }
-
-    /**
-     * Translates alternate color codes in the string.
-     *
-     * @param string the String to translate
-     * @return the translated string
-     */
-    public static String translateColors(String string) {
-        return ChatColor.translateAlternateColorCodes('&', string);
+        return string;
     }
 
 }

@@ -97,7 +97,7 @@ public class MessageHandler {
      *         a placeholder, if the configuration is erroneous.
      */
     public String getMessage(String language, Message message) {
-        return MessageUtil.translateColors(getRaw(language, message));
+        return MessageUtil.replaceLegacyChars(getRaw(language, message));
     }
 
     /**

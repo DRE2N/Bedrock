@@ -156,7 +156,7 @@ public enum DefaultFontInfo {
      * Method to add spaces to a String to show up in the middle of the chat
      */
     public static String center(String message) {
-        return getCenterSpaces(message) + MessageUtil.translateColors(message);
+        return getCenterSpaces(message) + MessageUtil.replaceLegacyChars(message);
     }
 
     /**
@@ -170,7 +170,7 @@ public enum DefaultFontInfo {
         if (message == null || message.isEmpty()) {
             return "";
         }
-        message = MessageUtil.translateColors( message);
+        message = MessageUtil.replaceLegacyChars(message);
 
         int messagePxSize = 0;
         boolean previousCode = false;
