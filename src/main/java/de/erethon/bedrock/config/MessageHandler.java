@@ -126,7 +126,7 @@ public class MessageHandler {
         String output = getMessage(language, message);
         int i = 0;
         while (i < args.length) {
-            String replace = args[i];
+            String replace = args[i] == null ? "" : args[i];
             output = output.replace("&v" + ++i, replace);
         }
         return output;

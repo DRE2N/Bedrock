@@ -1,5 +1,6 @@
 package de.erethon.bedrock.plugin;
 
+import com.google.common.io.Files;
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.command.ECommandCache;
 import de.erethon.bedrock.compatibility.CompatibilityHandler;
@@ -32,6 +33,9 @@ public class EPlugin extends JavaPlugin {
     protected static CompatibilityHandler compat;
     protected static PluginManager manager;
 
+    protected File languagesFolder;
+    protected BedrockConfig bedrockConfig;
+    protected MessageHandler bedrockMessageHandler;
     protected MessageHandler messageHandler;
     protected EPluginSettings settings;
 
@@ -47,6 +51,10 @@ public class EPlugin extends JavaPlugin {
         compat = CompatibilityHandler.getInstance();
         manager = getServer().getPluginManager();
 
+        bedrockConfig = new BedrockConfig(new File(getDataFolder().getParent() + "/Bedrock", "config.yml"));
+
+        reloadBedrockMessageHandler();
+
         loadEconomyProvider();
         loadPermissionProvider();
         placeholderAPI = manager.isPluginEnabled("PlaceholderAPI");
@@ -54,7 +62,7 @@ public class EPlugin extends JavaPlugin {
         if (settings.usesMetrics()) {
             metrics = new Metrics(this, settings.getBStatsResourceId());
         }
-        if (settings.isSpigotMCResource() && BedrockConfig.getInstance().isUpdaterEnabled()) {
+        if (settings.isSpigotMCResource() && bedrockConfig.isUpdaterEnabled()) {
             SpigetUpdate updater = new SpigetUpdate(this, settings.getSpigotMCResourceId());
             updater.setVersionComparator(settings.getVersionComparator());
             updater.checkForUpdate(new UpdateCallback() {
@@ -114,6 +122,64 @@ public class EPlugin extends JavaPlugin {
     }
 
     /**
+     * Reloads the {@link de.erethon.bedrock.config.BedrockMessage} language files.
+     */
+    public void reloadBedrockMessageHandler() {
+        languagesFolder = new File(getDataFolder().getParent(), "/Bedrock/languages");
+        languagesFolder.mkdirs();
+        attemptToSaveBedrockMessageResource("bedrock/english.yml", false);
+        attemptToSaveBedrockMessageResource("bedrock/german.yml", false);
+        bedrockMessageHandler = new MessageHandler(languagesFolder);
+    }
+
+    /**
+     * Attempts to save a {@link de.erethon.bedrock.config.BedrockMessage} resource.
+     * <p>
+     * See {@link org.bukkit.plugin.Plugin#saveResource(java.lang.String, boolean)}. This does not throw an exception.
+     * <p>
+     * Updates the file if it lacks configuration paths the resource has.
+     *
+     * @param resource the path to the resource to save
+     * @param replace  if the resource shall be replaced
+     * @return if the resource was saved or updated
+     */
+    public boolean attemptToSaveBedrockMessageResource(String resource, boolean replace) {
+        File file = new File(languagesFolder, resource);
+        if (replace || !file.exists()) {
+            try {
+                saveResource(resource, replace);
+                Files.move(new File(getDataFolder(), resource), file);
+                return true;
+            } catch (IllegalArgumentException | IOException exception) {
+                return false;
+            }
+        } else {
+            boolean updated = false;
+            InputStream is = getResource(resource);
+            if (is == null) {
+                return false;
+            }
+            YamlConfiguration resourceCfg = YamlConfiguration.loadConfiguration(new InputStreamReader(is, StandardCharsets.UTF_8));
+            YamlConfiguration fileCfg = YamlConfiguration.loadConfiguration(file);
+            for (String key : resourceCfg.getKeys(true)) {
+                if (!fileCfg.contains(key)) {
+                    fileCfg.set(key, resourceCfg.get(key));
+                    updated = true;
+                }
+            }
+            if (updated) {
+                try {
+                    fileCfg.save(file);
+                } catch (IOException exception) {
+                    MessageUtil.log(this, "&4File \"" + resource + "\" could not be updated.");
+                    exception.printStackTrace();
+                }
+            }
+            return updated;
+        }
+    }
+
+    /**
      * Reloads the language files.
      */
     public void reloadMessageHandler() {
@@ -145,7 +211,6 @@ public class EPlugin extends JavaPlugin {
             } catch (IllegalArgumentException exception) {
                 return false;
             }
-
         } else {
             boolean updated = false;
             InputStream is = getResource(resource);
@@ -184,6 +249,13 @@ public class EPlugin extends JavaPlugin {
     }
 
     /* getter and setter */
+
+    /**
+     * @return the bedrock config
+     */
+    public BedrockConfig getBedrockConfig() {
+        return bedrockConfig;
+    }
 
     /**
      * @return the settings
@@ -255,6 +327,13 @@ public class EPlugin extends JavaPlugin {
             reloadMessageHandler();
         }
         return messageHandler;
+    }
+
+    /**
+     * @return the bedrock message handler
+     */
+    public MessageHandler getBedrockMessageHandler() {
+        return bedrockMessageHandler;
     }
 
     /* statics */

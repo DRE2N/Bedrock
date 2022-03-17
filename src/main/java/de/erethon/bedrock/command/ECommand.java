@@ -2,6 +2,7 @@ package de.erethon.bedrock.command;
 
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.config.BedrockMessage;
+import de.erethon.bedrock.misc.InfoUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,6 +22,11 @@ public abstract class ECommand {
     private final Set<String> aliases = new HashSet<>();
     private int minArgs;
     private int maxArgs;
+    private String description;
+    private String usage;
+    private HelpType helpType = HelpType.DEFAULT;
+    private String listedHelpHeader;
+    private String paginatedHelpHeader;
     private String help;
     private String permission;
     private boolean playerCommand;
@@ -28,7 +34,23 @@ public abstract class ECommand {
     private final CommandCache subCommands = new CommandCache();
 
     public void displayHelp(CommandSender sender) {
-        MessageUtil.sendMessage(sender, ChatColor.RED + help);
+        switch (helpType) {
+            case LISTED -> {
+                if (listedHelpHeader == null) {
+                    InfoUtil.sendListedHelp(sender, subCommands);
+                } else {
+                    InfoUtil.sendListedHelp(sender, subCommands, listedHelpHeader);
+                }
+            }
+            case PAGINATED -> {
+                if (paginatedHelpHeader == null) {
+                    InfoUtil.sendPaginatedHelp(sender, subCommands, false);
+                } else {
+                    InfoUtil.sendPaginatedHelp(sender, subCommands, paginatedHelpHeader, false);
+                }
+            }
+            default -> MessageUtil.sendMessage(sender, ChatColor.RED + getHelp());
+        }
     }
 
     public void addSubCommand(ECommand command) {
@@ -215,6 +237,41 @@ public abstract class ECommand {
     }
 
     /**
+     * @return the command the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the command description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the command usage
+     */
+    public String getUsage() {
+        return usage;
+    }
+
+    /**
+     * @return the colored command usage
+     */
+    public String getColoredUsage() {
+        return colorUsage(usage);
+    }
+
+    /**
+     * @param usage the command usage to set
+     */
+    public void setUsage(String usage) {
+        this.usage = usage;
+    }
+
+    /**
      * @return the help message
      */
     public String getHelp() {
@@ -226,6 +283,55 @@ public abstract class ECommand {
      */
     public void setHelp(String help) {
         this.help = help;
+    }
+
+    /**
+     * Sets the default formatted help.
+     */
+    public void setDefaultHelp() {
+        setHelp(formatDefaultHelp(usage, description));
+    }
+
+    /**
+     * @return the help type
+     */
+    public HelpType getHelpType() {
+        return helpType;
+    }
+
+    /**
+     * @param type the help type to set
+     */
+    public void setHelpType(HelpType type) {
+        this.helpType = type;
+    }
+
+    /**
+     * @return the listed help header
+     */
+    public String getListedHelpHeader() {
+        return listedHelpHeader;
+    }
+
+    /**
+     * @param listedHelpHeader the listed help header to set
+     */
+    public void setListedHelpHeader(String listedHelpHeader) {
+        this.listedHelpHeader = listedHelpHeader;
+    }
+
+    /**
+     * @return the paginated help header
+     */
+    public String getPaginatedHelpHeader() {
+        return paginatedHelpHeader;
+    }
+
+    /**
+     * @param paginatedHelpHeader the paginated help header to set
+     */
+    public void setPaginatedHelpHeader(String paginatedHelpHeader) {
+        this.paginatedHelpHeader = paginatedHelpHeader;
     }
 
     /**
@@ -283,4 +389,39 @@ public abstract class ECommand {
      * @param sender the player or console that sent the command
      */
     public abstract void onExecute(String[] args, CommandSender sender);
+
+    /* Statics */
+
+    /**
+     * Colors the usage via the default scheme.
+     *
+     * @param usage the command usage to color
+     * @return the colored usage
+     */
+    public static String colorUsage(String usage) {
+        if (usage == null) {
+            return "MISSING_USAGE";
+        }
+        return "&6" + ChatColor.stripColor(usage).replace("[", "[&e").replace("|", "&6|&e").replace("]", "&6]");
+    }
+
+    /**
+     * Formats the usage and description via the default scheme.
+     *
+     * @param usage the command usage to format
+     * @param description the command description to format
+     * @return the formatted default help
+     */
+    public static String formatDefaultHelp(String usage, String description) {
+        return description != null ? colorUsage(usage) + " &8- &7" + description : colorUsage(usage);
+    }
+
+    /**
+     * Defines the method to send help messages with.
+     */
+    public enum HelpType {
+        DEFAULT,
+        LISTED,
+        PAGINATED
+    }
 }

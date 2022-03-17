@@ -1,0 +1,18 @@
+cmd:
+  doesNotExist: "&cThis command does not exist."
+  noConsoleCommand: "&cThis command may not be executed by the console."
+  noPermission: "&cYou do not have permission to use this command."
+  noPlayerCommand: "&cThis command may not be executed by a player."
+
+hover:
+  aliases: "&6Aliases&8: &7&v1"
+  command: "&4Command&8: &c&v1"
+  description: "&6Description&8: &7&v1"
+  none: "none"
+  permission: "&6Permission&8: &7&v1"
+  subCommands: "&6SubCommands&8: &e&v1"
+  usage: "&6Usage&8: &7&v1"
+
+info:
+  commands: "Commands"
+  header: "&6&l[&r&4 Total of &8- &6&v1 &8- &4&v2 &6&l]"

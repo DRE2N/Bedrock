@@ -1,7 +1,5 @@
 package de.erethon.bedrock.config;
 
-import de.erethon.bedrock.plugin.EPlugin;
-
 import java.io.File;
 
 /**
@@ -11,9 +9,8 @@ public class BedrockConfig extends EConfig {
 
     public static final int CONFIG_VERSION = 1;
 
-    private static BedrockConfig instance;
-
     private boolean updaterEnabled = true;
+    private int commandsPerHelpPage = 6;
 
     public BedrockConfig(File file) {
         super(file, CONFIG_VERSION);
@@ -26,26 +23,22 @@ public class BedrockConfig extends EConfig {
 
     @Override
     public void initialize() {
-        if (!config.contains("updaterEnabled")) {
-            config.set("updaterEnabled", updaterEnabled);
-        }
+        initValue("updaterEnabled", updaterEnabled);
+        initValue("commandsPerHelpPage", commandsPerHelpPage);
         save();
     }
 
     @Override
     public void load() {
         updaterEnabled = config.getBoolean("updaterEnabled", updaterEnabled);
+        commandsPerHelpPage = config.getInt("commandsPerHelpPage", commandsPerHelpPage);
     }
 
     public boolean isUpdaterEnabled() {
         return updaterEnabled;
     }
 
-    public static BedrockConfig getInstance() {
-        if (instance == null) {
-            instance = new BedrockConfig(new File(EPlugin.getInstance().getDataFolder().getParent() + "/Bedrock", "config.yml"));
-        }
-        return instance;
+    public int getCommandsPerHelpPage() {
+        return commandsPerHelpPage;
     }
-
 }

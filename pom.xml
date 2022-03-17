@@ -6,7 +6,7 @@
 
     <groupId>de.erethon</groupId>
     <artifactId>bedrock</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <description>Core library for DRE2N Bukkit plugins; containing commands, configs, user caching and more.</description>
     <packaging>jar</packaging>
 
@@ -68,7 +68,8 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>messages.yml</include>
+                    <include>english.yml</include>
+                    <include>german.yml</include>
                 </includes>
             </resource>
         </resources>

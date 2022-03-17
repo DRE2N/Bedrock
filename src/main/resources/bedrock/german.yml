@@ -1,0 +1,18 @@
+cmd:
+  doesNotExist: "&cDieser Befehl existiert nicht."
+  noConsoleCommand: "&cDieser Befehl kann nicht von Konsolen ausgeführt werden."
+  noPermission: "&cDu hast keine Berechtigung, diesen Befehl auszuführen."
+  noPlayerCommand: "&cDieser Befehl kann nicht von Spielern ausgeführt werden."
+
+hover:
+  aliases: "&6Abkürzungen&8: &7&v1"
+  command: "&4Befehl&8: &c&v1"
+  description: "&6Beschreibung&8: &7&v1"
+  none: "keine"
+  permission: "&6Berechtigung&8: &7&v1"
+  subCommands: "&6Unterbefehle&8: &e&v1"
+  usage: "&6Nutzung&8: &7&v1"
+
+info:
+  commands: "Befehle"
+  header: "&6&l[&r&4 Insgesamt &8- &6&v1 &8- &4&v2 &6&l]"

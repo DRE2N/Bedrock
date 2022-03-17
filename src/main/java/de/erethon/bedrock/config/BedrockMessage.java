@@ -1,11 +1,6 @@
 package de.erethon.bedrock.config;
 
-import com.google.common.io.Files;
 import de.erethon.bedrock.plugin.EPlugin;
-import org.bukkit.plugin.Plugin;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Messages used by this library.
@@ -17,25 +12,18 @@ public enum BedrockMessage implements Message {
     CMD_DOES_NOT_EXIST("cmd.doesNotExist"),
     CMD_NO_CONSOLE_COMMAND("cmd.noConsoleCommand"),
     CMD_NO_PERMISSION("cmd.noPermission"),
-    CMD_NO_PLAYER_COMMAND("cmd.noPlayerCommand");
+    CMD_NO_PLAYER_COMMAND("cmd.noPlayerCommand"),
 
-    private static final MessageHandler messageHandler;
+    HOVER_ALIASES("hover.aliases"),
+    HOVER_COMMAND("hover.command"),
+    HOVER_DESCRIPTION("hover.description"),
+    HOVER_NONE("hover.none"),
+    HOVER_PERMISSION("hover.permission"),
+    HOVER_SUB_COMMANDS("hover.subCommands"),
+    HOVER_USAGE("hover.usage"),
 
-    static {
-        Plugin plugin = EPlugin.getInstance();
-        File dest = new File(plugin.getDataFolder().getParent() + "/Bedrock", "messages.yml");
-        if (!dest.exists()) {
-            dest.getParentFile().mkdir();
-            plugin.saveResource("messages.yml", false);
-            try {
-                Files.move(new File(plugin.getDataFolder(), "messages.yml"), dest);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        messageHandler = new MessageHandler(dest);
-        messageHandler.setDefaultLanguage("messages");
-    }
+    INFO_COMMANDS("info.commands"),
+    INFO_HEADER("info.header");
 
     private final String path;
 
@@ -50,7 +38,7 @@ public enum BedrockMessage implements Message {
 
     @Override
     public MessageHandler getMessageHandler() {
-        return messageHandler;
+        return EPlugin.getInstance().getBedrockMessageHandler();
     }
 
 }
