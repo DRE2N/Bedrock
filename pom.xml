@@ -45,7 +45,6 @@
                                     <include>org.bstats:bstats-base</include>
                                     <include>org.bstats:bstats-bukkit</include>
                                     <include>org.inventivetalent.spiget-update</include>
-                                    <include>net.kyori:adventure-text-minimessage</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
