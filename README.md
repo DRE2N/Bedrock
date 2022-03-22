@@ -26,7 +26,7 @@ Core library for Bukkit plugins of DRE2N, containing commands, configurations, u
 
 ## Compatibility
 
-This library supports paper version 1.16 and higher. Non-paper versions do build but lack some features,
+This library supports paper version 1.18.2 and higher. Non-paper versions do build but lack some features,
 mostly related to adventure's MiniMessage.
 
 ## DRECommons
@@ -46,7 +46,7 @@ This library is an updated paper-only version of [DRECommons](https://github.com
 <dependency>
     <groupId>de.erethon</groupId>
     <artifactId>bedrock</artifactId>
-    <version>1.0.0</version>
+    <version>1.2.1</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -61,6 +61,6 @@ repositories {
 }
 
 dependencies {
-    implementation("de.erethon:bedrock:1.0.0")
+    implementation("de.erethon:bedrock:1.2.1")
 }
 ```
