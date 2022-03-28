@@ -2,7 +2,6 @@ package de.erethon.bedrock.misc;
 
 import de.erethon.bedrock.chat.MessageUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -58,11 +57,11 @@ public class ProgressBar extends BukkitRunnable {
     public void run() {
         int i = (int) Math.round(((double) secondsLeft / (double) seconds) * 10);
         StringBuilder bar = new StringBuilder(BAR);
-        bar.insert(10 - i, ChatColor.DARK_RED);
+        bar.insert(10 - i, "<dark_red>");
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null && player.isOnline()) {
-                MessageUtil.sendActionBarMessage(player, ChatColor.GREEN + bar.toString());
+                MessageUtil.sendActionBarMessage(player, "<green>" + bar);
             }
         }
 

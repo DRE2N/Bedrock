@@ -3,7 +3,6 @@ package de.erethon.bedrock.command;
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.misc.InfoUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,7 +48,7 @@ public abstract class ECommand {
                     InfoUtil.sendPaginatedHelp(sender, subCommands, paginatedHelpHeader, false);
                 }
             }
-            default -> MessageUtil.sendMessage(sender, ChatColor.RED + getHelp());
+            default -> MessageUtil.sendMessage(sender, "<red>" + getHelp());
         }
     }
 
@@ -402,7 +401,7 @@ public abstract class ECommand {
         if (usage == null) {
             return "MISSING_USAGE";
         }
-        return "&6" + ChatColor.stripColor(usage).replace("[", "[&e").replace("|", "&6|&e").replace("]", "&6]");
+        return "&6" + MessageUtil.stripColor(usage).replace("[", "[&e").replace("|", "&6|&e").replace("]", "&6]");
     }
 
     /**
