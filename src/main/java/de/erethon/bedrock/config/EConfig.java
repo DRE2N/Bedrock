@@ -82,7 +82,7 @@ public abstract class EConfig {
      * @return true if the value was initialized, else false
      */
     protected boolean initValue(String path, Object value) {
-        if (config.contains(path)) {
+        if (!config.contains(path)) {
             config.set(path, value);
             return true;
         }
