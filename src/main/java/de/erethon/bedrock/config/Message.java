@@ -48,19 +48,46 @@ public interface Message {
         return getMessageHandler().getMessage(this, args);
     }
 
+    /**
+     * Returns the formatted message Component.
+     *
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
     default Component message() {
-        return MessageUtil.parse(getMessage());
+        return getMessageHandler().message(this);
     }
 
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param args Strings to replace possible variables in the message
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
     default Component message(String... args) {
-        return MessageUtil.parse(getMessage(args));
+        return getMessageHandler().message(this, args);
+    }
+
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param args Components to replace possible variables in the message
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    default Component message(Component... args) {
+        return getMessageHandler().message(this, args);
     }
 
     /**
      * Sends the message to the console.
      */
     default void debug() {
-        MessageUtil.log(EPlugin.getInstance(), getMessage());
+        MessageUtil.log(getMessage());
     }
 
 }

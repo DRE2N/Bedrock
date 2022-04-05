@@ -2,6 +2,7 @@ package de.erethon.bedrock.config;
 
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.misc.FileUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -143,6 +144,91 @@ public class MessageHandler {
      */
     public String getMessage(Message message, String... args) {
         return getMessage(getDefaultLanguage(), message, args);
+    }
+
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param message the message
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public Component message(Message message) {
+        return message(getDefaultLanguage(), message);
+    }
+
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param language the language
+     * @param message  the message
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public Component message(String language, Message message) {
+        return MessageUtil.parse(getRaw(language, message));
+    }
+
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param message  the message
+     * @param args     Strings to replace possible variables in the message
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public Component message(Message message, String... args) {
+        return message(getDefaultLanguage(), message, args);
+    }
+
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param language the language
+     * @param message  the message
+     * @param args     Strings to replace possible variables in the message
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public Component message(String language, Message message, String... args) {
+        return MessageUtil.parse(getMessage(language, message, args));
+    }
+
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param message the message
+     * @param args    Components to replace possible variables in the message
+     * @return the formatted Component message;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public Component message(Message message, Component... args) {
+        return message(getDefaultLanguage(), message, args);
+    }
+
+    /**
+     * Returns the formatted message Component.
+     *
+     * @param language the language
+     * @param message  the message
+     * @param args     Components to replace possible variables in the message
+     * @return the formatted message Component;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public Component message(String language, Message message, Component... args) {
+        Component output = message(language, message);
+        int[] i = {0};
+        while (i[0] < args.length) {
+            Component replace = args[i[0]] == null ? Component.text("") : args[i[0]];
+            output = output.replaceText(b -> b.matchLiteral("&v" + ++i[0]).replacement(replace));
+        }
+        return output;
     }
 
 }
