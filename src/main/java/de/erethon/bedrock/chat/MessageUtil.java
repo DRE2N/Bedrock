@@ -3,12 +3,15 @@ package de.erethon.bedrock.chat;
 import de.erethon.bedrock.plugin.EPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -18,6 +21,7 @@ import java.util.regex.Pattern;
 public class MessageUtil {
 
     private static final MiniMessage mm = MiniMessage.miniMessage();
+    private static final PlainTextComponentSerializer ps = PlainTextComponentSerializer.plainText();
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)&[0-9A-FK-ORX]");
 
     /**
@@ -386,9 +390,7 @@ public class MessageUtil {
      * @param fadeOut  the time in ticks it takes for the message to disappear
      */
     public static void sendTitleMessage(Player player, String title, String subtitle, int fadeIn, int show, int fadeOut) {
-        title = serialize(parse(title));
-        subtitle = serialize(parse(subtitle));
-        player.sendTitle(title, subtitle, fadeIn, show, fadeOut);
+        sendTitleMessage(player, parse(title), parse(subtitle), fadeIn, show, fadeOut);
     }
 
     /**
@@ -399,7 +401,7 @@ public class MessageUtil {
      * @param subtitle the message of the second, small line
      */
     public static void sendTitleMessage(Player player, String title, String subtitle) {
-        sendTitleMessage(player, title, subtitle, 20, 60, 20);
+        sendTitleMessage(player, parse(title), parse(subtitle));
     }
 
     /**
@@ -409,7 +411,46 @@ public class MessageUtil {
      * @param title  the message of the first, big line
      */
     public static void sendTitleMessage(Player player, String title) {
-        sendTitleMessage(player, title, "", 20, 60, 20);
+        sendTitleMessage(player, parse(title));
+    }
+
+    /**
+     * Sends a title message. Supports color codes.
+     *
+     * @param player   the player who will receive the message
+     * @param title    the message of the first, big line
+     * @param subtitle the message of the second, small line
+     * @param fadeIn   the time in ticks it takes for the message to appear
+     * @param show     the time in ticks how long the message will be visible
+     * @param fadeOut  the time in ticks it takes for the message to disappear
+     */
+    public static void sendTitleMessage(Player player, Component title, Component subtitle, int fadeIn, int show, int fadeOut) {
+        player.showTitle(Title.title(title, subtitle, Title.Times.times(tickDuration(fadeIn), tickDuration(show), tickDuration(fadeOut))));
+    }
+
+    /**
+     * Sends a title message. Supports color codes.
+     *
+     * @param player   the player who will receive the message
+     * @param title    the message of the first, big line
+     * @param subtitle the message of the second, small line
+     */
+    public static void sendTitleMessage(Player player, Component title, Component subtitle) {
+        sendTitleMessage(player, title, subtitle, 20, 60, 20);
+    }
+
+    /**
+     * Sends a title message. Supports color codes.
+     *
+     * @param player the player who will receive the message
+     * @param title  the message of the first, big line
+     */
+    public static void sendTitleMessage(Player player, Component title) {
+        sendTitleMessage(player, title, Component.empty(), 20, 60, 20);
+    }
+
+    private static Duration tickDuration(int ticks) {
+        return Duration.ofMillis(ticks * 20L);
     }
 
     /**
@@ -484,6 +525,16 @@ public class MessageUtil {
      */
     public static String serialize(Component msg) {
         return mm.serialize(msg);
+    }
+
+    /**
+     * Serializes the msg component.
+     *
+     * @param msg the message to serialize
+     * @return the serialized string
+     */
+    public static String serializePlain(Component msg) {
+        return ps.serialize(msg);
     }
 
     /**
