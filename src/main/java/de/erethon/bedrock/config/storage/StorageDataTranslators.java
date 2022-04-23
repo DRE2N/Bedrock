@@ -30,7 +30,13 @@ public class StorageDataTranslators {
         registerDataTranslator(new StorageDataTranslator<>(Short.class, (o) -> o, (o) -> (short) o));
         registerDataTranslator(new StorageDataTranslator<>(String.class, (o) -> o, (o) -> (String) o));
         registerDataTranslator(new StorageDataTranslator<>(StringIgnoreCase.class, Object::toString, (o) -> new StringIgnoreCase((String) o)));
-        registerDataTranslator(new StorageDataTranslator<>(Location.class, (o) -> ((Location) o).serialize(), (o) -> Location.deserialize(ConfigUtil.getMap(o))));
+        registerDataTranslator(new StorageDataTranslator<>(Location.class, (o) -> {
+            Location loc = (Location) o;
+            if (loc.isWorldLoaded()) {
+                loc.setWorld(null);
+            }
+            return loc.serialize();
+        }, (o) -> Location.deserialize(ConfigUtil.getMap(o))));
         registerDataTranslator(new StorageDataTranslator<>(UUID.class, Object::toString, (o) -> UUID.fromString((String) o)));
         registerDataTranslator(new StorageDataTranslator<>(Collection.class, (o) -> {
             Collection<?> list = (Collection<?>) o;
