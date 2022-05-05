@@ -175,6 +175,21 @@ public enum DefaultFontInfo {
         if (message == null || message.isEmpty()) {
             return "";
         }
+        int messagePxSize = getLength(message);
+        int halvedMessageSize = messagePxSize / 2;
+        int toCompensate = CENTER_PX - halvedMessageSize;
+        int spaceLength = SPACE.getLength() + 1;
+        int compensated = 0;
+        StringBuilder sb = new StringBuilder();
+
+        while (compensated < toCompensate) {
+            sb.append(" ");
+            compensated += spaceLength;
+        }
+        return sb.toString();
+    }
+
+    public static int getLength(String message) {
         // Remove component tags and bypass MiniMessage legacy char exception by temporarily replacing affected chars
         message = MessageUtil.replaceLegacyChars(message);
         message = message.replace("<bold>", "{&l}").replace("<!bold>", "{!&l}");
@@ -199,16 +214,6 @@ public enum DefaultFontInfo {
                 messagePxSize++;
             }
         }
-        int halvedMessageSize = messagePxSize / 2;
-        int toCompensate = CENTER_PX - halvedMessageSize;
-        int spaceLength = SPACE.getLength() + 1;
-        int compensated = 0;
-        StringBuilder sb = new StringBuilder();
-
-        while (compensated < toCompensate) {
-            sb.append(" ");
-            compensated += spaceLength;
-        }
-        return sb.toString();
+        return messagePxSize;
     }
 }
