@@ -92,6 +92,8 @@ public enum DefaultFontInfo {
     SINGLE_QUOTE('\'', 1),
     LEFT_ARROW('<', 4),
     RIGHT_ARROW('>', 4),
+    DOUBLE_LEFT_ARROW('«', 5),
+    DOUBLE_RIGHT_ARROW('»', 5),
     QUESTION_MARK('?', 5),
     SLASH('/', 5),
     BACK_SLASH('\\', 5),
@@ -132,6 +134,9 @@ public enum DefaultFontInfo {
         if (this == SPACE) {
             return getLength();
         }
+        if (this == DOUBLE_LEFT_ARROW || this == DOUBLE_RIGHT_ARROW) {
+            return length + 2;
+        }
         return length + 1;
     }
 
@@ -156,7 +161,7 @@ public enum DefaultFontInfo {
      * Method to add spaces to a String to show up in the middle of the chat
      */
     public static String center(String message) {
-        return getCenterSpaces(message) + MessageUtil.replaceLegacyChars(message);
+        return getCenterSpaces(message) + message;
     }
 
     /**
@@ -170,13 +175,17 @@ public enum DefaultFontInfo {
         if (message == null || message.isEmpty()) {
             return "";
         }
+        // Remove component tags and bypass MiniMessage legacy char exception by temporarily replacing affected chars
         message = MessageUtil.replaceLegacyChars(message);
+        message = message.replace("<bold>", "{&l}").replace("<!bold>", "{!&l}");
+        message = MessageUtil.stripTokens(message);
+        message = message.replace("{&l}", "\u00A7l").replace("{!&l}", "\u00A7f");
 
         int messagePxSize = 0;
         boolean previousCode = false;
         boolean isBold = false;
 
-        for (char c : MessageUtil.stripTokens(message).toCharArray()) {
+        for (char c : message.toCharArray()) {
             if (c == '\u00A7') {
                 previousCode = true;
 
