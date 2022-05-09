@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Daniel Saukel, Fyreum
@@ -87,6 +88,16 @@ public abstract class EConfig {
             return true;
         }
         return false;
+    }
+
+    protected List<String> getStringList(String path, List<String> def) {
+        List<String> list = config.getStringList(path);
+        return list.isEmpty() ? def : list;
+    }
+
+    protected List<Integer> getIntegerList(String path, List<Integer> def) {
+        List<Integer> list = config.getIntegerList(path);
+        return list.isEmpty() ? def : list;
     }
 
     /**
