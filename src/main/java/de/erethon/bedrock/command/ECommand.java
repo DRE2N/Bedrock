@@ -397,6 +397,15 @@ public abstract class ECommand {
         this.executionPrefix = executionPrefix;
     }
 
+    /**
+     * @param cache the command cache to set execution prefixes for
+     */
+    public void setExecutionPrefixesFor(CommandCache cache) {
+        for (ECommand cmd : cache) {
+            cmd.setExecutionPrefix(getCommand());
+        }
+    }
+
     /* Abstracts */
     /**
      * @param args   the arguments to pass from the command
