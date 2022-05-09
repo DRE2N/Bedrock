@@ -398,11 +398,12 @@ public abstract class ECommand {
     }
 
     /**
-     * @param cache the command cache to set execution prefixes for
+     * Sets the execution prefix for every sub command and its sub commands etc.
      */
-    public void setExecutionPrefixesFor(CommandCache cache) {
-        for (ECommand cmd : cache) {
-            cmd.setExecutionPrefix(getCommand());
+    public void setAllExecutionPrefixes() {
+        for (ECommand sub : getSubCommands()) {
+            sub.setExecutionPrefix(getExecutionPrefix() + getCommand() + " ");
+            sub.setAllExecutionPrefixes();
         }
     }
 

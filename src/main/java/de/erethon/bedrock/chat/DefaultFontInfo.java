@@ -134,9 +134,6 @@ public enum DefaultFontInfo {
         if (this == SPACE) {
             return getLength();
         }
-        if (this == DOUBLE_LEFT_ARROW || this == DOUBLE_RIGHT_ARROW) {
-            return length + 2;
-        }
         return length + 1;
     }
 
@@ -194,9 +191,9 @@ public enum DefaultFontInfo {
         message = MessageUtil.replaceLegacyChars(message);
         message = message.replace("<bold>", "{&l}").replace("<!bold>", "{!&l}");
         message = MessageUtil.stripTokens(message);
-        message = message.replace("{&l}", "\u00A7l").replace("{!&l}", "\u00A7f");
+        message = message.replace("{&l}", "\u00A7l").replace("{!&l}", "\u00A7r");
 
-        int messagePxSize = 0;
+        double messagePxSize = 0;
         boolean previousCode = false;
         boolean isBold = false;
 
@@ -206,14 +203,13 @@ public enum DefaultFontInfo {
 
             } else if (previousCode) {
                 previousCode = false;
-                isBold = c == 'l' || c == 'L';
+                isBold = isBold ? c != 'r' : c == 'l';
 
             } else {
                 DefaultFontInfo dFI = getDefaultFontInfo(c);
-                messagePxSize += isBold ? dFI.getBoldLength() : dFI.getLength();
-                messagePxSize++;
+                messagePxSize += isBold ? dFI.getBoldLength() + 1.5 : dFI.getLength() + 1;
             }
         }
-        return messagePxSize;
+        return (int) messagePxSize;
     }
 }
