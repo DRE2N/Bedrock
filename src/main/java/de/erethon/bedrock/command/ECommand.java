@@ -31,6 +31,7 @@ public abstract class ECommand {
     private boolean playerCommand;
     private boolean consoleCommand;
     private final CommandCache subCommands = new CommandCache();
+    private String executionPrefix = "";
 
     public void displayHelp(CommandSender sender) {
         switch (helpType) {
@@ -380,6 +381,20 @@ public abstract class ECommand {
      */
     public CommandCache getSubCommands() {
         return subCommands;
+    }
+
+    /**
+     * @return the execution prefix
+     */
+    public String getExecutionPrefix() {
+        return executionPrefix;
+    }
+
+    /**
+     * @param executionPrefix the execution prefix
+     */
+    public void setExecutionPrefix(String executionPrefix) {
+        this.executionPrefix = executionPrefix;
     }
 
     /* Abstracts */

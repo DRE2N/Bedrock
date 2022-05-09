@@ -94,7 +94,7 @@ public class InfoUtil {
             return;
         }
         ComponentConverter<ECommand> converter = cmd -> Component.text("&6" + cmd.getCommand())
-                .clickEvent(ClickEvent.suggestCommand("/" + cmd.getCommand() + " "))
+                .clickEvent(ClickEvent.suggestCommand("/" + cmd.getExecutionPrefix() + cmd.getCommand() + " "))
                 .hoverEvent(HoverEvent.showText(
                                 BedrockMessage.HOVER_COMMAND.message(cmd.getCommand()).append(Component.newline()).append(Component.newline())
                                         .append(BedrockMessage.HOVER_ALIASES.message(JavaUtil.toString(cmd.getAliases()))).append(Component.newline())
