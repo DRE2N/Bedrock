@@ -19,9 +19,11 @@ public class EPluginSettings {
     private final int bStatsResourceId;
     private final Set<Internals> internals;
     private final VersionComparator versionComparator;
+    private final boolean forcePaper;
 
     public EPluginSettings(boolean economy, boolean permissions, boolean metrics, int spigotMCResourceId,
-                           int bStatsResourceId, Set<Internals> internals, VersionComparator versionComparator) {
+                           int bStatsResourceId, Set<Internals> internals, VersionComparator versionComparator,
+                           boolean forcePaper) {
         this.economy = economy;
         this.permissions = permissions;
         this.metrics = metrics;
@@ -29,6 +31,7 @@ public class EPluginSettings {
         this.spigotMCResourceId = spigotMCResourceId;
         this.bStatsResourceId = bStatsResourceId;
         this.versionComparator = versionComparator;
+        this.forcePaper = forcePaper;
     }
 
     /**
@@ -88,6 +91,13 @@ public class EPluginSettings {
     }
 
     /**
+     * @return if this plugin should be disabled on non-paper server
+     */
+    public boolean isForcePaper() {
+        return forcePaper;
+    }
+
+    /**
      * Returns a utility object to build an instance
      *
      * @return a utility object to build an instance
@@ -105,6 +115,7 @@ public class EPluginSettings {
         private int bStatsResourceId = -1;
         private Set<Internals> internals = Internals.INDEPENDENT;
         private VersionComparator versionComparator = VersionComparator.SEM_VER;
+        private boolean forcePaper = false;
 
         Builder() {
         }
@@ -149,8 +160,14 @@ public class EPluginSettings {
             return this;
         }
 
+        public Builder forcePaper(boolean forcePaper) {
+            this.forcePaper = forcePaper;
+            return this;
+        }
+
         public EPluginSettings build() {
-            return new EPluginSettings(economy, permissions, metrics, spigotMCResourceId, bStatsResourceId, internals, versionComparator);
+            return new EPluginSettings(economy, permissions, metrics, spigotMCResourceId, bStatsResourceId,
+                    internals, versionComparator, forcePaper);
         }
     }
 

@@ -51,6 +51,11 @@ public class EPlugin extends JavaPlugin {
         compat = CompatibilityHandler.getInstance();
         manager = getServer().getPluginManager();
 
+        if (settings.isForcePaper() && !compat.isPaper()) {
+            MessageUtil.log("This plugin requires Paper to run. https://papermc.io/");
+            manager.disablePlugin(this);
+            return;
+        }
         bedrockConfig = new BedrockConfig(new File(getDataFolder().getParent() + "/Bedrock", "config.yml"));
 
         reloadBedrockMessageHandler();
