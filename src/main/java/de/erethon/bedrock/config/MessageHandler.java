@@ -3,6 +3,7 @@ package de.erethon.bedrock.config;
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.misc.FileUtil;
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -93,12 +94,92 @@ public class MessageHandler {
      *
      * @param language the language
      * @param message  the message
+     * @param args     Strings to replace possible variables in the message
+     * @return the formatted message String;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public String getMessage(String language, Message message, boolean legacy, String... args) {
+        String output = getMessage(language, message, legacy);
+        int i = 0;
+        while (i < args.length) {
+            String replace = args[i] == null ? "" : args[i];
+            output = output.replace("&v" + ++i, replace);
+        }
+        return output;
+    }
+
+    /**
+     * Returns the formatted message String.
+     *
+     * @param language the language
+     * @param message  the message
+     * @param legacy   if legacy codes are allowed
+     * @return the formatted message String;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public String getMessage(String language, Message message, boolean legacy) {
+        String raw = getRaw(language, message);
+        return legacy ? ChatColor.translateAlternateColorCodes('&', raw) : MessageUtil.replaceLegacyChars(raw);
+    }
+
+    /**
+     * Returns the formatted message String.
+     *
+     * @param language the language
+     * @param message  the message
+     * @param args     Strings to replace possible variables in the message
+     * @return the formatted message String;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public String getMessage(String language, Message message, String... args) {
+        return getMessage(language, message, false, args);
+    }
+
+    /**
+     * Returns the formatted message String.
+     *
+     * @param language the language
+     * @param message  the message
      * @return the formatted message String;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
      */
     public String getMessage(String language, Message message) {
-        return MessageUtil.replaceLegacyChars(getRaw(language, message));
+        return getMessage(language, message, false);
+    }
+
+    /**
+     * Returns the formatted message String.
+     *
+     * @param message the message
+     * @param args    Strings to replace possible variables in the message
+     * @param legacy  if legacy codes are allowed
+     * @return the formatted message String;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public String getMessage(Message message, boolean legacy, String... args) {
+        return getMessage(getDefaultLanguage(), message, legacy, args);
+    }
+
+    /**
+     * Returns the formatted message String.
+     *
+     * @param message the message
+     * @param args    Strings to replace possible variables in the message
+     * @return the formatted message String;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    public String getMessage(Message message, String... args) {
+        return getMessage(message, false, args);
+    }
+
+    public String getMessage(Message message, boolean legacy) {
+        return getMessage(getDefaultLanguage(), message, legacy);
     }
 
     /**
@@ -113,38 +194,7 @@ public class MessageHandler {
         return getMessage(getDefaultLanguage(), message);
     }
 
-    /**
-     * Returns the formatted message String.
-     *
-     * @param language the language
-     * @param message  the message
-     * @param args     Strings to replace possible variables in the message
-     * @return the formatted message String;
-     *         null, if the path is null;
-     *         a placeholder, if the configuration is erroneous.
-     */
-    public String getMessage(String language, Message message, String... args) {
-        String output = getMessage(language, message);
-        int i = 0;
-        while (i < args.length) {
-            String replace = args[i] == null ? "" : args[i];
-            output = output.replace("&v" + ++i, replace);
-        }
-        return output;
-    }
-
-    /**
-     * Returns the formatted message String.
-     *
-     * @param message the message
-     * @param args    Strings to replace possible variables in the message
-     * @return the formatted message String;
-     *         null, if the path is null;
-     *         a placeholder, if the configuration is erroneous.
-     */
-    public String getMessage(Message message, String... args) {
-        return getMessage(getDefaultLanguage(), message, args);
-    }
+    /* components */
 
     /**
      * Returns the formatted message Component.

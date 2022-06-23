@@ -49,6 +49,29 @@ public interface Message {
     }
 
     /**
+     * Returns the formatted message string with legacy codes.
+     *
+     * @return the formatted message string with legacy codes;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    default String getLegacy() {
+        return getMessageHandler().getMessage(this, true);
+    }
+
+    /**
+     * Returns the formatted message string with legacy codes.
+     *
+     * @param args Strings to replace possible variables in the message
+     * @return the formatted message string with legacy codes;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
+    default String getLegacy(String... args) {
+        return getMessageHandler().getMessage(this, true, args);
+    }
+
+    /**
      * Returns the formatted message Component.
      *
      * @return the formatted message Component;
