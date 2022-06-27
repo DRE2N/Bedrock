@@ -20,6 +20,10 @@ public class CommandFailedException extends RuntimeException {
         super(message.getMessage());
     }
 
+    public CommandFailedException(Message message, String... args) {
+        super(message.getMessage(args));
+    }
+
     public CommandFailedException(String message) {
         super(message);
     }
