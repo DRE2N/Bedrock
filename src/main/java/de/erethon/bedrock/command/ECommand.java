@@ -2,9 +2,12 @@ package de.erethon.bedrock.command;
 
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.config.BedrockMessage;
+import de.erethon.bedrock.config.Message;
 import de.erethon.bedrock.misc.InfoUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -164,7 +167,40 @@ public abstract class ECommand {
                 }
             }
         }
-        onExecute(args, sender);
+        try {
+            onExecute(args, sender);
+        } catch (CommandFailedException e) {
+            String message = e.getMessage();
+            if (message == null || message.isEmpty()) {
+                displayHelp(sender);
+                return;
+            }
+            MessageUtil.sendMessage(sender, message);
+        }
+    }
+
+    /* assertion */
+
+    @Contract("false -> fail")
+    protected void assure(boolean b) {
+        assure(b, getHelp());
+    }
+
+    @Contract("false, _ -> fail")
+    protected void assure(boolean b, Message message) {
+        assure(b, message.getMessage());
+    }
+
+    @Contract("false, _, _ -> fail")
+    protected void assure(boolean b, @NotNull Message msg, @NotNull String... args) {
+        assure(b, msg.getMessage(args));
+    }
+
+    @Contract("false, _ -> fail")
+    protected void assure(boolean b, String msg) {
+        if (!b) {
+            throw new CommandFailedException(msg);
+        }
     }
 
     /* getter and setter */
