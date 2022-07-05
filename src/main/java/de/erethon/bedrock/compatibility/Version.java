@@ -8,6 +8,7 @@ import java.util.Set;
 
 import static de.erethon.bedrock.compatibility.Internals.OUTDATED;
 import static de.erethon.bedrock.compatibility.Internals.v1_18_R2;
+import static de.erethon.bedrock.compatibility.Internals.v1_19_R1;
 
 /**
  * This enumeration represents the Minecraft version and is supposed not to be implementation specific.
@@ -22,6 +23,7 @@ public enum Version {
      * getCraftBukkitInternals() might return a known package version or NEW.
      */
     NEW(true, true, true, Internals.NEW),
+    MC1_19(true, true, true, v1_19_R1),
     MC1_18_2(true, true, true, v1_18_R2),
     MC1_18_1(true, true, true, OUTDATED),
     MC1_18(true, true, true, OUTDATED),
