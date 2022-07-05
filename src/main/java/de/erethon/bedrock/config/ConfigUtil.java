@@ -17,23 +17,23 @@ import java.util.Map;
 public class ConfigUtil {
 
     /**
-     * Returns a Map<String, Object> at the provided path or an empty one
+     * Returns a {@literal Map<String, Object>} at the provided path or an empty one
      *
      * @param config the ConfigurationSection
      * @param path   the path
-     * @return a Map<String, Object> at the provided path or an empty one
+     * @return a {@literal Map<String, Object>}  at the provided path or an empty one
      */
     public static Map<String, Object> getMap(ConfigurationSection config, String path) {
         return getMap(config, path, false);
     }
 
     /**
-     * Returns a Map<String, Object> at the provided path or an empty one
+     * Returns a {@literal Map<String, Object>}  at the provided path or an empty one
      *
      * @param config the ConfigurationSection
      * @param path   the path
      * @param deep   deep values
-     * @return a Map<String, Object> at the provided path or an empty one
+     * @return a {@literal Map<String, Object>}  at the provided path or an empty one
      */
     public static Map<String, Object> getMap(ConfigurationSection config, String path, boolean deep) {
         ConfigurationSection section = config.getConfigurationSection(path);
@@ -45,21 +45,21 @@ public class ConfigUtil {
     }
 
     /**
-     * Returns a Map<String, Object> of the provided object or an empty one
+     * Returns a {@literal Map<String, Object>}  of the provided object or an empty one
      *
      * @param obj    the object
-     * @return a Map<String, Object> of the provided object or an empty one
+     * @return a {@literal Map<String, Object>}  of the provided object or an empty one
      */
     public static Map<String, Object> getMap(Object obj) {
         return getMap(obj, false);
     }
 
     /**
-     * Returns a Map<String, Object> of the provided object or an empty one
+     * Returns a {@literal Map<String, Object>}  of the provided object or an empty one
      *
      * @param obj    the object
      * @param deep   deep values
-     * @return a Map<String, Object> of the provided object or an empty one
+     * @return a {@literal Map<String, Object>}  of the provided object or an empty one
      */
     public static Map<String, Object> getMap(Object obj, boolean deep) {
         if (obj == null) {

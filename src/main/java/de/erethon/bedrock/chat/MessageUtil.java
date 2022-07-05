@@ -106,7 +106,7 @@ public class MessageUtil {
 
     /**
      * Broadcasts a perfectly centered message to all players. Supports color codes.
-     * (Component formatting like <COLOR> or <rainbow> can cause issues)
+     * (Component formatting like {@literal <COLOR>} or {@literal <rainbow>} can cause issues)
      *
      * @param message the message String
      */
@@ -116,7 +116,7 @@ public class MessageUtil {
 
     /**
      * Broadcasts a perfectly centered Component message to all players.
-     * (Component formatting like <COLOR> or <rainbow> can cause issues)
+     * (Component formatting like {@literal <COLOR>} or {@literal <rainbow>} can cause issues)
      *
      * @param message the message String
      */
@@ -126,7 +126,7 @@ public class MessageUtil {
 
     /**
      * Broadcasts a perfectly centered message to all players. Supports color codes.
-     * (Component formatting like <COLOR> or <rainbow> can cause issues)
+     * (Component formatting like {@literal <COLOR>} or {@literal <rainbow>} can cause issues)
      *
      * @param filter  the player filter
      * @param message the message String
@@ -137,7 +137,7 @@ public class MessageUtil {
 
     /**
      * Broadcasts a perfectly centered Component message to all players.
-     * (Component formatting like <COLOR> or <rainbow> can cause issues)
+     * (Component formatting like {@literal <COLOR>} or {@literal <rainbow>} can cause issues)
      *
      * @param filter  the player filter
      * @param message the message String

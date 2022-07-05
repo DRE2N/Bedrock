@@ -77,7 +77,7 @@ public @interface StorageData {
      * The index of the given class type indicates the order in the Collection.
      * For example if you store a List of String Lists, you would specify the types List and then String.
      * <br>
-     * List<List<String>> -> elementTypes = {List.class, String.class}
+     * {@literal List<List<String>>} -> elementTypes = {List.class, String.class}
      *
      * @return the collection element types
      */
@@ -86,9 +86,9 @@ public @interface StorageData {
     /**
      * If the stored value is a Map, this specifies the type of keys used in it.
      * The index of the given class type indicates the order in the Map.
-     * For example if you store a Map of String and Map<Integer, Object>, you would specify the types String and then Integer.
+     * For example if you store a Map of String and {@literal Map<Integer, Object>}, you would specify the types String and then Integer.
      * <br>
-     * Map<String, Map<Integer, Object>> -> keyTypes = {String.class, Integer.class}
+     * {@literal Map<String, Map<Integer, Object>>} -> keyTypes = {String.class, Integer.class}
      *
      * @return the map key types
      */
@@ -97,9 +97,9 @@ public @interface StorageData {
     /**
      * If the stored value is a Map, this specifies the type of values stored in it.
      * The index of the given class type indicates the order in the Map.
-     * For example if you store a Map of String and Map<Integer, Object>, you would specify the types Map and then Object.
+     * For example if you store a Map of String and {@literal Map<Integer, Object>}, you would specify the types Map and then Object.
      * <br>
-     * Map<String, Map<Integer, Object>> -> valueTypes = {Map.class, Object.class}
+     * {@literal Map<String, Map<Integer, Object>>} -> valueTypes = {Map.class, Object.class}
      *
      * @return the map value types
      */
@@ -110,13 +110,13 @@ public @interface StorageData {
      * This should be used if the following example applies:
      *
      * <blockquote>
-     *     List<?> list = new ArrayList<>();
+     *     {@literal List<?> list = new ArrayList<>();}
      * </blockquote>
      *
      * instead of
      *
      * <blockquote>
-     *     ArrayList<?> list = new ArrayList<>();
+     *     {@literal List<?> list = new ArrayList<>();}
      * </blockquote>
      *
      * @return the correct field type
