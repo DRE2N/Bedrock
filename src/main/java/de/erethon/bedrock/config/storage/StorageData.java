@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * The annotated field will be stored and managed by the given class StorageDataContainer.
  *
  * Note: Every class type annotated has to be registered at the {@link StorageDataTranslators} class
- *       first, in order to work. To do so, a {@link StorageDataDeserializer} and {@link StorageDataDeserializer}
+ *       first, in order to work. To do so, a {@link StorageDataSerializer} and {@link StorageDataDeserializer}
  *       need to be defined.
  *
  * Be aware, that this storage system is designed to be used to store simple data types.
