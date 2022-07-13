@@ -5,6 +5,7 @@ import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.command.ECommandCache;
 import de.erethon.bedrock.compatibility.CompatibilityHandler;
 import de.erethon.bedrock.config.BedrockConfig;
+import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.config.MessageHandler;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -127,7 +128,7 @@ public class EPlugin extends JavaPlugin {
     }
 
     /**
-     * Reloads the {@link de.erethon.bedrock.config.BedrockMessage} language files.
+     * Reloads the {@link BedrockMessage} language files.
      */
     public void reloadBedrockMessageHandler() {
         languagesFolder = new File(getDataFolder().getParent(), "/Bedrock/languages");
@@ -138,7 +139,7 @@ public class EPlugin extends JavaPlugin {
     }
 
     /**
-     * Attempts to save a {@link de.erethon.bedrock.config.BedrockMessage} resource.
+     * Attempts to save a {@link BedrockMessage} resource.
      * <p>
      * See {@link org.bukkit.plugin.Plugin#saveResource(java.lang.String, boolean)}. This does not throw an exception.
      * <p>

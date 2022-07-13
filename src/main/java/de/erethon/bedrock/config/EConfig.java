@@ -32,14 +32,10 @@ public abstract class EConfig {
                 }
                 file.createNewFile();
                 config = YamlConfiguration.loadConfiguration(file);
-                config.set("configVersion", CONFIG_VERSION);
                 initialize = true;
-                save();
-
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
-
         } else {
             config = new YamlConfiguration();
             try {
@@ -56,7 +52,6 @@ public abstract class EConfig {
                     exception2.printStackTrace();
                 }
                 MessageUtil.log("&4The file has been regenerated. A backup of the erroneous file has been saved.");
-
                 initialize = true;
             }
 
@@ -67,11 +62,10 @@ public abstract class EConfig {
                 MessageUtil.log("&4Adding missing values...");
                 initialize = true;
             }
-
-            if (initialize) {
-                config.set("configVersion", CONFIG_VERSION);
-                save();
-            }
+        }
+        if (initialize) {
+            config.set("configVersion", CONFIG_VERSION);
+            save();
         }
     }
 

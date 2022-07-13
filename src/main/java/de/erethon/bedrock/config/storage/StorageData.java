@@ -4,6 +4,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * This class offers the possibility to initialize, load and save data at specified configuration paths.
@@ -15,8 +17,8 @@ import java.lang.annotation.Target;
  *       need to be defined.
  *
  * Be aware, that this storage system is designed to be used to store simple data types.
- * Complex data types like {@link java.util.Map} or {@link java.util.Collection} are not guaranteed
- * to work always perfect.
+ * Complex data types like {@link Map} or {@link Collection} are not guaranteed
+ * to work always perfectly.
  * That being said, using multiple maps in collections or other maps are likely to fail.
  */
 @Target(ElementType.FIELD)
@@ -73,19 +75,9 @@ public @interface StorageData {
     StorageDataSave save() default StorageDataSave.CHANGES;
 
     /**
-     * If the stored value is a Collection, this specifies the type of elements stored in it.
-     * The index of the given class type indicates the order in the Collection.
-     * For example if you store a List of String Lists, you would specify the types List and then String.
-     * <br>
-     * {@literal List<List<String>>} -> elementTypes = {List.class, String.class}
-     *
-     * @return the collection element types
-     */
-    Class<?>[] elementTypes() default Object.class;
-
-    /**
-     * If the stored value is a Map, this specifies the type of keys used in it.
+     * If the stored value is a {@link Map}, this specifies the type of keys used in it.
      * The index of the given class type indicates the order in the Map.
+     * <br>
      * For example if you store a Map of String and {@literal Map<Integer, Object>}, you would specify the types String and then Integer.
      * <br>
      * {@literal Map<String, Map<Integer, Object>>} -> keyTypes = {String.class, Integer.class}
@@ -95,11 +87,20 @@ public @interface StorageData {
     Class<?>[] keyTypes() default Object.class;
 
     /**
-     * If the stored value is a Map, this specifies the type of values stored in it.
-     * The index of the given class type indicates the order in the Map.
-     * For example if you store a Map of String and {@literal Map<Integer, Object>}, you would specify the types Map and then Object.
+     * If the stored value is a {@link Map} or {@link Collection}, this specifies the type of values stored in it.
+     * The index of the given class type indicates the order in the Map/Collection.
      * <br>
-     * {@literal Map<String, Map<Integer, Object>>} -> valueTypes = {Map.class, Object.class}
+     * For example if you store a Map of String and {@literal Map<Integer, Object>}, you would specify the types Map and then Object.
+     *
+     * <blockquote>
+     *     {@literal Map<String, Map<Integer, Object>>} -> valueTypes = {Map.class, Object.class}
+     * </blockquote>
+     *
+     * If you store a List of String Lists, you would specify the types List and then String.
+     *
+     * <blockquote>
+     *     {@literal List<List<String>>} -> elementTypes = {List.class, String.class}
+     * </blockquote>
      *
      * @return the map value types
      */
@@ -107,7 +108,7 @@ public @interface StorageData {
 
     /**
      * This specifies the correct class type if the field uses an interface instead of the implementation class.
-     * This should be used if the following example applies:
+     * This should be used if the field looks like this:
      *
      * <blockquote>
      *     {@literal List<?> list = new ArrayList<>();}
@@ -116,7 +117,7 @@ public @interface StorageData {
      * instead of
      *
      * <blockquote>
-     *     {@literal List<?> list = new ArrayList<>();}
+     *     {@literal ArrayList<?> list = new ArrayList<>();}
      * </blockquote>
      *
      * @return the correct field type

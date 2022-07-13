@@ -1,7 +1,0 @@
-name: ExamplePlugin
-version: '${project.version}'
-main: de.erethon.example.ExamplePlugin
-api-version: 1.19
-authors: [ Fyreum ]
-description: An example plugin using the Bedrock library
-website: https://github.com/DRE2N/Bedrock

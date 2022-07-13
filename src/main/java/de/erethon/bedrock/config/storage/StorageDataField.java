@@ -21,7 +21,6 @@ public final class StorageDataField {
 
     private final Field field;
     private final Class<?> type;
-    private final Class<?>[] elementTypes;
     private final Class<?>[] keyTypes;
     private final Class<?>[] valueTypes;
     private final String path;
@@ -42,7 +41,6 @@ public final class StorageDataField {
         this.field = field;
         Class<?> exactType = annotation.type();
         this.type = ClassUtil.getClass(exactType != StorageData.DefaultTypeClass.class ? exactType : field.getType());
-        this.elementTypes = annotation.elementTypes();
         this.keyTypes = annotation.keyTypes();
         this.valueTypes = annotation.valueTypes();
         this.path = annotation.path().isEmpty() ? field.getName() : annotation.path();
@@ -71,10 +69,10 @@ public final class StorageDataField {
     }
 
     protected Object deserialize(Object value) throws NullPointerException {
-        return deserialize(value, type, 0);
+        return deserialize(value, type, 0, 0);
     }
 
-    private Object deserialize(Object value, Class<?> type, int run) {
+    private Object deserialize(Object value, Class<?> type, int keyIndex, int valueIndex) throws NullPointerException {
         StorageDataTranslator<?> translator = StorageDataTranslators.get(type);
         Object deserialized = translator.deserialize(value);
 
@@ -84,7 +82,7 @@ public final class StorageDataField {
             }
             Collection<Object> deserializedList = new ArrayList<>(list.size());
             for (Object serialized : list) {
-                Object element = deserialize(serialized, elementTypes.length <= run ? Object.class : elementTypes[run], run + 1);
+                Object element = deserialize(serialized, valueTypes.length <= valueIndex ? Object.class : valueTypes[valueIndex], keyIndex, valueIndex + 1);
                 deserializedList.add(element);
             }
             return deserializedList;
@@ -94,8 +92,8 @@ public final class StorageDataField {
             }
             Map<Object, Object> deserializedMap = new HashMap<>(map.size());
             for (Object serializedKey : map.keySet()) {
-                Object key = deserialize(serializedKey, keyTypes.length <= run ? Object.class : keyTypes[run], run);
-                Object v = deserialize(map.get(serializedKey), valueTypes.length <= run ? Object.class : valueTypes[run], run + 1);
+                Object key = deserialize(serializedKey, keyTypes.length <= keyIndex ? Object.class : keyTypes[keyIndex], keyIndex + 1, valueIndex);
+                Object v = deserialize(map.get(serializedKey), valueTypes.length <= valueIndex ? Object.class : valueTypes[valueIndex], keyIndex, valueIndex + 1);
                 deserializedMap.put(key, v);
             }
             return deserializedMap;
@@ -146,12 +144,9 @@ public final class StorageDataField {
         if (value instanceof Collection c) {
             if (initialValue instanceof Collection<?> list) { // check if the initial value is already a Collection
                 debug("Loading value '" + value + "' from '" + path + "'...");
-
-                Constructor<? extends Collection> constructor = list.getClass().getDeclaredConstructor(Collection.class);
-                constructor.setAccessible(true);
-                list.addAll(constructor.newInstance(c));
+                list.addAll(c);
                 return;
-            } else if (!type.getName().equals(Object.class.getName())) {
+            } else if (!type.getName().equals(Object.class.getName()) && !type.getName().equals(ArrayList.class.getName())) {
                 Constructor<? extends Collection> constructor = (Constructor<? extends Collection>) type.getDeclaredConstructor(Collection.class);
                 constructor.setAccessible(true);
                 value = constructor.newInstance(value);
@@ -159,12 +154,9 @@ public final class StorageDataField {
         } else if (value instanceof Map m) { // check if the initial value is already a Map
             if (initialValue instanceof Map<?, ?> map) {
                 debug("Loading value '" + value + "' from '" + path + "'...");
-
-                Constructor<? extends Map> constructor = map.getClass().getDeclaredConstructor(Map.class);
-                constructor.setAccessible(true);
-                map.putAll(constructor.newInstance(m));
+                map.putAll(m);
                 return;
-            } else if (!type.getName().equals(Object.class.getName())) {
+            } else if (!type.getName().equals(Object.class.getName()) && !type.getName().equals(HashMap.class.getName())) {
                 Constructor<? extends Map> constructor = (Constructor<? extends Map>) type.getDeclaredConstructor(Map.class);
                 constructor.setAccessible(true);
                 value = constructor.newInstance(value);
@@ -232,13 +224,6 @@ public final class StorageDataField {
     }
 
     /**
-     * @return the collection element types
-     */
-    public Class<?>[] getElementTypes() {
-        return elementTypes;
-    }
-
-    /**
      * @return the map key types
      */
     public Class<?>[] getKeyTypes() {
@@ -246,7 +231,7 @@ public final class StorageDataField {
     }
 
     /**
-     * @return the map value types
+     * @return the map/collection value types
      */
     public Class<?>[] getValueTypes() {
         return valueTypes;

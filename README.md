@@ -35,7 +35,7 @@ This library is an updated paper-only version of [DRECommons](https://github.com
 
 ### Maven
 
-```
+```xml
 <repositories>
     <repository>
         <id>dre-repo</id>
@@ -46,14 +46,14 @@ This library is an updated paper-only version of [DRECommons](https://github.com
 <dependency>
     <groupId>de.erethon</groupId>
     <artifactId>bedrock</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <scope>compile</scope>
 </dependency>
 ```
 
 ### Gradle (Kotlin)
 
-```
+```kotlin
 repositories {
     maven {
         url = uri("https://erethon.de/repo")
@@ -61,6 +61,6 @@ repositories {
 }
 
 dependencies {
-    implementation("de.erethon:bedrock:1.2.1")
+    implementation("de.erethon:bedrock:1.2.2")
 }
 ```
