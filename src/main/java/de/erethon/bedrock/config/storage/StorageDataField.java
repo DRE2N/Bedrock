@@ -56,20 +56,12 @@ public final class StorageDataField {
         this.initialValue = getValue(container);
     }
 
-    protected Object serialize(StorageDataContainer container) throws NullPointerException, IllegalAccessException {
-        return serialize(getValue(container));
-    }
-
     private Object serialize(Object value) throws NullPointerException {
         if (value == null) {
             return null;
         }
         StorageDataTranslator<?> translator = StorageDataTranslators.get(type);
         return translator.serialize(value);
-    }
-
-    protected Object deserialize(Object value) throws NullPointerException {
-        return deserialize(value, type, 0, 0);
     }
 
     private Object deserialize(Object value, Class<?> type, int keyIndex, int valueIndex) throws NullPointerException {
@@ -113,7 +105,7 @@ public final class StorageDataField {
             debug("Won't initialize value '" + path + "': Already present");
             return;
         }
-        set(config, serialize(initialValue));
+        config.set(path, serialize(initialValue));
     }
 
     protected void load(StorageDataContainer container) throws NullPointerException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
@@ -123,7 +115,7 @@ public final class StorageDataField {
         }
         if (value != null) {
             try {
-                value = deserialize(value);
+                value = deserialize(value, type, 0, 0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -188,11 +180,7 @@ public final class StorageDataField {
         log("Saving value '" + path + "'...");
         debug("Saving value '" + value + "' at '" + path + "'...");
 
-        set(container.getConfig(), value);
-    }
-
-    private void set(ConfigurationSection config, Object value) {
-        config.set(path, value);
+        container.getConfig().set(path, value);
     }
 
     private void log(String msg) {
@@ -293,6 +281,9 @@ public final class StorageDataField {
         return initialValue;
     }
 
+    /**
+     * @return the hash code of the loaded value
+     */
     public int getLoadedHashCode() {
         return loadedHashCode;
     }
