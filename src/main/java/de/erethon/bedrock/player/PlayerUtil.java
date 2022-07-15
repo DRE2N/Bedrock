@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import java.util.UUID;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel
  */
 public class PlayerUtil {

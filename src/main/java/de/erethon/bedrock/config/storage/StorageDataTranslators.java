@@ -17,6 +17,7 @@ import java.util.UUID;
 /**
  * This class manages the registrations for {@link StorageDataTranslator}s
  *
+ * @since 1.1.0
  * @author Fyreum
  */
 public class StorageDataTranslators {

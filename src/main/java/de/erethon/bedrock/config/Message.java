@@ -5,6 +5,7 @@ import de.erethon.bedrock.plugin.EPlugin;
 import net.kyori.adventure.text.Component;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public interface Message {
@@ -54,6 +55,7 @@ public interface Message {
      * @return the formatted message string with legacy codes;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.2
      */
     default String getLegacy() {
         return getMessageHandler().getMessage(this, true);
@@ -66,6 +68,7 @@ public interface Message {
      * @return the formatted message string with legacy codes;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.2
      */
     default String getLegacy(String... args) {
         return getMessageHandler().getMessage(this, true, args);
@@ -101,6 +104,7 @@ public interface Message {
      * @return the formatted message Component;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.1
      */
     default Component message(Component... args) {
         return getMessageHandler().message(this, args);
@@ -109,7 +113,7 @@ public interface Message {
     /**
      * Sends the message to the console.
      */
-    default void debug() {
+    default void log() {
         MessageUtil.log(getMessage());
     }
 

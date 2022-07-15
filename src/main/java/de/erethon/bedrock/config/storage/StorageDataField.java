@@ -15,15 +15,16 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * @since 1.1.0
  * @author Fyreum
  */
 public final class StorageDataField {
 
     private final Field field;
+    private final String path;
     private final Class<?> type;
     private final Class<?>[] keyTypes;
     private final Class<?>[] valueTypes;
-    private final String path;
     private final boolean initialize;
     private final boolean log;
     private final boolean debug;
@@ -33,23 +34,33 @@ public final class StorageDataField {
     private Object initialValue;
     private int loadedHashCode;
 
-    protected StorageDataField(Field field) {
+    protected StorageDataField(Field field, String subPath) {
         StorageData annotation = field.getAnnotation(StorageData.class);
         if (annotation == null) {
             throw new IllegalArgumentException("Missing annotation " + StorageData.class.getName());
         }
         this.field = field;
+        this.path = finalPath(subPath, annotation.path());
         Class<?> exactType = annotation.type();
         this.type = ClassUtil.getClass(exactType != StorageData.DefaultTypeClass.class ? exactType : field.getType());
         this.keyTypes = annotation.keyTypes();
         this.valueTypes = annotation.valueTypes();
-        this.path = annotation.path().isEmpty() ? field.getName() : annotation.path();
         this.initialize = annotation.initialize();
         this.log = annotation.log();
         this.debug = annotation.debug();
         this.nullability = annotation.nullability();
         this.forbiddenNullMessage = annotation.forbiddenNullMessage().isEmpty() ? "Illegal null value at '" + path + "' was found" : annotation.forbiddenNullMessage();
         this.saveSetting = annotation.save();
+    }
+
+    private String finalPath(String subPath, String path) {
+        if (path.contains("#")) {
+            if (subPath.isEmpty()) {
+                throw new IllegalArgumentException("Illegal character '#' found in path");
+            }
+            return subPath;
+        }
+        return subPath + (path.isEmpty() ? field.getName() : path);
     }
 
     protected void loadInitialValue(StorageDataContainer container) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
@@ -289,7 +300,7 @@ public final class StorageDataField {
     }
 
     protected Object getValue(StorageDataContainer container) throws IllegalAccessException {
-        container.setAccessible(field, true);
+        field.setAccessible(true);
         return field.get(container);
     }
 

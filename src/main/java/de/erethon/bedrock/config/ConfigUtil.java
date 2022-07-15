@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class ConfigUtil {

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class FileUtil {

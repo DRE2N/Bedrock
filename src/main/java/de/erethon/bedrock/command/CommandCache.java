@@ -8,6 +8,7 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 
 /**
+ * @since 1.0.0
  * @author Sataniel, Fyreum
  */
 public class CommandCache implements Iterable<ECommand> {

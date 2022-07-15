@@ -15,6 +15,7 @@ import java.util.UUID;
 /**
  * A boss bar based progress bar.
  *
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class ProgressBar extends BukkitRunnable {

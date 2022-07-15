@@ -1,4 +1,4 @@
-package de.erethon.bedrock.loading;
+package de.erethon.bedrock.user;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,9 +23,10 @@ import java.util.UUID;
  * It registers itself as an {@link Listener} to load and unload users through join and quit events.
  *
  * @param <USER> The user object to load
+ * @since 1.0.0
  * @author Fyreum
  */
-public abstract class UserCacheLoader<USER extends LoadableUser> implements Listener {
+public abstract class UserCache<USER extends LoadableUser> implements Listener {
 
     private final Plugin plugin;
     private final Map<String, UUID> nameToId;
@@ -35,7 +37,7 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
     /**
      * @param plugin the plugin to register the listener with
      */
-    public UserCacheLoader(JavaPlugin plugin) {
+    public UserCache(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
         this.nameToId = new HashMap<>();
         this.idToUser = new HashMap<>();
@@ -58,7 +60,7 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
      * @param player the player to load
      * @return the loaded user
      */
-    public USER load(Player player) {
+    public USER load(@NotNull Player player) {
         USER user = getNewInstance(player);
         if (user == null) {
             throw new NullPointerException("The user instance for " + player.getName() + " is null -> getNewInstance(OfflinePlayer) has to return a NotNull instance for online players");
@@ -86,7 +88,7 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
      * @param player the player to unload
      * @return the unloaded user
      */
-    public USER unload(Player player) {
+    public USER unload(@NotNull Player player) {
         USER user = idToUser.get(player.getUniqueId());
         if (user != null) {
             user.saveUser();
@@ -115,12 +117,12 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
 
     /**
      * Returns the cached user matching the name if found.
-     * If no user is found it will try to create a new one.
+     * If no user is found, it will try to create a new one.
      *
      * @param name the name to get the user for
-     * @see UserCacheLoader#getNewInstance(OfflinePlayer)
+     * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByName(String name) {
+    public USER getByName(@NotNull String name) {
         UUID uuid = nameToId.get(name);
         if (uuid == null) {
             uuid = Bukkit.getOfflinePlayer(name).getUniqueId();
@@ -130,12 +132,12 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
 
     /**
      * Returns the cached user matching the uuid if found.
-     * If no user is found it will try to create a new one.
+     * If no user is found, it will try to create a new one.
      *
      * @param uuid the uuid to get the user for
-     * @see UserCacheLoader#getNewInstance(OfflinePlayer)
+     * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByUniqueId(UUID uuid) {
+    public USER getByUniqueId(@NotNull UUID uuid) {
         USER user = idToUser.get(uuid);
         if (user != null) {
             return user;
@@ -145,14 +147,14 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
 
     /**
      * Returns the cached user matching the player if found.
-     * If no user is found it will try to create a new one.
+     * If no user is found, it will try to create a new one.
      * <br>
-     * <b>Note:</b> online players should always be not null.
+     * <b>Note:</b> online players should always be <b>not</b> null.
      *
      * @param player the player to get the user for
-     * @see UserCacheLoader#getNewInstance(OfflinePlayer)
+     * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByPlayer(OfflinePlayer player) {
+    public USER getByPlayer(@NotNull OfflinePlayer player) {
         USER user = idToUser.get(player.getUniqueId());
         if (user != null) {
             return user;
@@ -182,6 +184,7 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
      * Returns the duration after which an offline player gets unloaded.
      *
      * @return the duration after which an offline player gets unloaded
+     * @since 1.1.0
      */
     public long getUnloadAfter() {
         return unloadAfter;
@@ -191,6 +194,7 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
      * Set the duration after which an offline player gets unloaded.
      *
      * @param unloadAfter the duration
+     * @since 1.1.0
      */
     public void setUnloadAfter(long unloadAfter) {
         this.unloadAfter = unloadAfter;
@@ -207,12 +211,12 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
      * @param player the player to get the user for
      * @return a new user object if possible, else null
      */
-    protected abstract USER getNewInstance(OfflinePlayer player);
+    protected abstract USER getNewInstance(@NotNull OfflinePlayer player);
 
     /* listener */
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         BukkitTask kickTask = idToTask.get(uuid);
@@ -231,7 +235,7 @@ public abstract class UserCacheLoader<USER extends LoadableUser> implements List
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    public void onQuit(@NotNull PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
         USER user = getByPlayer(player);

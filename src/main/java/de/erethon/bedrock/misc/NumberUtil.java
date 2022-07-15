@@ -1,6 +1,7 @@
 package de.erethon.bedrock.misc;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class NumberUtil {

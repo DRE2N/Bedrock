@@ -3,6 +3,7 @@ package de.erethon.bedrock.config;
 import java.io.File;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class BedrockConfig extends EConfig {

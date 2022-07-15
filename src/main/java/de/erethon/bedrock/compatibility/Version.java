@@ -13,6 +13,7 @@ import static de.erethon.bedrock.compatibility.Internals.v1_19_R1;
 /**
  * This enumeration represents the Minecraft version and is supposed not to be implementation specific.
  *
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public enum Version {

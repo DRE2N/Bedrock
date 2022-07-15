@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * @since 1.2.1
  * @author Fyreum
  */
 public class InfoUtil {

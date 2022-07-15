@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class EnumUtil {
@@ -30,6 +31,7 @@ public class EnumUtil {
      * @param valueName the name of the enum value
      * @param defaultValue the default enum value
      * @return the enum value if it exists. Not case-sensitive
+     * @since 1.2.1
      */
     public static <E extends Enum<E>> E getEnumIgnoreCase(@Nullable Class<E> enumClass, @Nullable String valueName, @Nullable E defaultValue) {
         return getEnum(enumClass, valueName.toUpperCase(), defaultValue);
@@ -57,6 +59,7 @@ public class EnumUtil {
      * @param valueName the name of the enum value
      * @param defaultValue the default enum value
      * @return the enum value if it exists
+     * @since 1.2.1
      */
     public static <E extends Enum<E>> E getEnum(@Nullable Class<E> enumClass, @Nullable String valueName, @Nullable E defaultValue) {
         if (enumClass == null || valueName == null) {

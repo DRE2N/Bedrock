@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel
  */
 public interface PlayerWrapper {

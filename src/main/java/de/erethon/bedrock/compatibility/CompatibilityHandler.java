@@ -3,6 +3,7 @@ package de.erethon.bedrock.compatibility;
 /**
  * The main class of CompatibilityHandler, mainly used for environment information.
  *
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class CompatibilityHandler {

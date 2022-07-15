@@ -15,6 +15,7 @@ import java.util.Set;
  * Note that Erethon plugins are usually designed to have just one instance of ECommandCache.
  * One instance of ECommandCache represents one command and contains all of its subcommands.
  *
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class ECommandCache extends CommandCache implements TabCompleter {

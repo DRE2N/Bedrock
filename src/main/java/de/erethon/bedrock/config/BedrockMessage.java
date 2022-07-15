@@ -5,6 +5,7 @@ import de.erethon.bedrock.plugin.EPlugin;
 /**
  * Messages used by this library.
  *
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public enum BedrockMessage implements Message {

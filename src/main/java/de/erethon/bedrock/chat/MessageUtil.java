@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
+ * @since 1.0.0
  * @author Sataniel, Fyreum
  */
 public class MessageUtil {
@@ -423,6 +424,7 @@ public class MessageUtil {
      * @param fadeIn   the time in ticks it takes for the message to appear
      * @param show     the time in ticks how long the message will be visible
      * @param fadeOut  the time in ticks it takes for the message to disappear
+     * @since 1.2.1
      */
     public static void sendTitleMessage(Player player, Component title, Component subtitle, int fadeIn, int show, int fadeOut) {
         player.showTitle(Title.title(title, subtitle, Title.Times.times(tickDuration(fadeIn), tickDuration(show), tickDuration(fadeOut))));
@@ -434,6 +436,7 @@ public class MessageUtil {
      * @param player   the player who will receive the message
      * @param title    the message of the first, big line
      * @param subtitle the message of the second, small line
+     * @since 1.2.1
      */
     public static void sendTitleMessage(Player player, Component title, Component subtitle) {
         sendTitleMessage(player, title, subtitle, 20, 60, 20);
@@ -444,6 +447,7 @@ public class MessageUtil {
      *
      * @param player the player who will receive the message
      * @param title  the message of the first, big line
+     * @since 1.2.1
      */
     public static void sendTitleMessage(Player player, Component title) {
         sendTitleMessage(player, title, Component.empty(), 20, 60, 20);
@@ -532,6 +536,7 @@ public class MessageUtil {
      *
      * @param msg the message to serialize
      * @return the serialized string
+     * @since 1.2.1
      */
     public static String serializePlain(Component msg) {
         return ps.serialize(msg);

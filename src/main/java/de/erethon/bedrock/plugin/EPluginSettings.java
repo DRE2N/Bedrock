@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class EPluginSettings {
@@ -92,6 +93,8 @@ public class EPluginSettings {
 
     /**
      * @return if this plugin should be disabled on non-paper server
+     *
+     * @since 1.2.1
      */
     public boolean isForcePaper() {
         return forcePaper;
@@ -160,6 +163,9 @@ public class EPluginSettings {
             return this;
         }
 
+        /**
+         * @since 1.2.1
+         */
         public Builder forcePaper(boolean forcePaper) {
             this.forcePaper = forcePaper;
             return this;

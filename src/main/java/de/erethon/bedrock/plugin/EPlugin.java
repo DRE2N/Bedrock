@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * @since 1.0.0
  * @author Sataniel, Fyreum
  */
 public class EPlugin extends JavaPlugin {
@@ -129,6 +130,8 @@ public class EPlugin extends JavaPlugin {
 
     /**
      * Reloads the {@link BedrockMessage} language files.
+     *
+     * @since 1.2.1
      */
     public void reloadBedrockMessageHandler() {
         languagesFolder = new File(getDataFolder().getParent(), "/Bedrock/languages");
@@ -148,6 +151,7 @@ public class EPlugin extends JavaPlugin {
      * @param resource the path to the resource to save
      * @param replace  if the resource shall be replaced
      * @return if the resource was saved or updated
+     * @since 1.2.1
      */
     public boolean attemptToSaveBedrockMessageResource(String resource, boolean replace) {
         File file = new File(languagesFolder, resource);
@@ -160,28 +164,7 @@ public class EPlugin extends JavaPlugin {
                 return false;
             }
         } else {
-            boolean updated = false;
-            InputStream is = getResource(resource);
-            if (is == null) {
-                return false;
-            }
-            YamlConfiguration resourceCfg = YamlConfiguration.loadConfiguration(new InputStreamReader(is, StandardCharsets.UTF_8));
-            YamlConfiguration fileCfg = YamlConfiguration.loadConfiguration(file);
-            for (String key : resourceCfg.getKeys(true)) {
-                if (!fileCfg.contains(key)) {
-                    fileCfg.set(key, resourceCfg.get(key));
-                    updated = true;
-                }
-            }
-            if (updated) {
-                try {
-                    fileCfg.save(file);
-                } catch (IOException exception) {
-                    MessageUtil.log(this, "&4File \"" + resource + "\" could not be updated.");
-                    exception.printStackTrace();
-                }
-            }
-            return updated;
+            return initializeResourceValues(resource, file);
         }
     }
 
@@ -218,29 +201,33 @@ public class EPlugin extends JavaPlugin {
                 return false;
             }
         } else {
-            boolean updated = false;
-            InputStream is = getResource(resource);
-            if (is == null) {
-                return false;
-            }
-            YamlConfiguration resourceCfg = YamlConfiguration.loadConfiguration(new InputStreamReader(is, StandardCharsets.UTF_8));
-            YamlConfiguration fileCfg = YamlConfiguration.loadConfiguration(file);
-            for (String key : resourceCfg.getKeys(true)) {
-                if (!fileCfg.contains(key)) {
-                    fileCfg.set(key, resourceCfg.get(key));
-                    updated = true;
-                }
-            }
-            if (updated) {
-                try {
-                    fileCfg.save(file);
-                } catch (IOException exception) {
-                    MessageUtil.log(this, "&4File \"" + resource + "\" could not be updated.");
-                    exception.printStackTrace();
-                }
-            }
-            return updated;
+            return initializeResourceValues(resource, file);
         }
+    }
+
+    private boolean initializeResourceValues(String resource, File file) {
+        boolean updated = false;
+        InputStream is = getResource(resource);
+        if (is == null) {
+            return false;
+        }
+        YamlConfiguration resourceCfg = YamlConfiguration.loadConfiguration(new InputStreamReader(is, StandardCharsets.UTF_8));
+        YamlConfiguration fileCfg = YamlConfiguration.loadConfiguration(file);
+        for (String key : resourceCfg.getKeys(true)) {
+            if (!fileCfg.contains(key)) {
+                fileCfg.set(key, resourceCfg.get(key));
+                updated = true;
+            }
+        }
+        if (updated) {
+            try {
+                fileCfg.save(file);
+            } catch (IOException exception) {
+                MessageUtil.log(this, "&4File \"" + resource + "\" could not be updated.");
+                exception.printStackTrace();
+            }
+        }
+        return updated;
     }
 
     protected void setDataFolder(File dataFolder) {
@@ -337,6 +324,7 @@ public class EPlugin extends JavaPlugin {
 
     /**
      * @return the bedrock message handler
+     * @since 1.2.1
      */
     public MessageHandler getBedrockMessageHandler() {
         return bedrockMessageHandler;

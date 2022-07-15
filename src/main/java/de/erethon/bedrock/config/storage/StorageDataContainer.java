@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @since 1.1.0
  * @author Fyreum
  */
 public class StorageDataContainer extends EConfig {
@@ -18,12 +19,24 @@ public class StorageDataContainer extends EConfig {
 
     public StorageDataContainer(File file, int configVersion) {
         super(file, configVersion);
-        Field[] fields = getClass().getDeclaredFields();
+        loadDataFields(getClass(), "");
+    }
+
+    private void loadDataFields(Class<?> clazz, String subPath) {
+        Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            if (!field.isAnnotationPresent(StorageData.class)) {
+            if (field.isAnnotationPresent(StorageData.class)) {
+                try {
+                    dataFields.add(new StorageDataField(field, subPath));
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
                 continue;
             }
-            dataFields.add(new StorageDataField(field));
+            if (field.isAnnotationPresent(AdditionalContainer.class)) {
+                String sub = field.getAnnotation(AdditionalContainer.class).subPath();
+                loadDataFields(field.getClass(), subPath + sub);
+            }
         }
     }
 
@@ -90,7 +103,4 @@ public class StorageDataContainer extends EConfig {
         super.save();
     }
 
-    protected void setAccessible(Field field, boolean access) {
-        field.setAccessible(access);
-    }
 }

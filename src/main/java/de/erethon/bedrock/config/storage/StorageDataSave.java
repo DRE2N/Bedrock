@@ -1,6 +1,7 @@
 package de.erethon.bedrock.config.storage;
 
 /**
+ * @since 1.1.0
  * @author Fyreum
  */
 public enum StorageDataSave {

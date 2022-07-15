@@ -17,6 +17,7 @@ import java.util.stream.Stream;
  *
  * @param <K> the key type
  * @param <E> the element type
+ * @since 1.2.1
  * @author Daniel Saukel
  */
 public class Registry<K, E> implements Iterable<E> {

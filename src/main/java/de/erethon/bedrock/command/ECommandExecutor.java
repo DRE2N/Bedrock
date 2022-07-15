@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 /**
  * The default CommandExecutor for all ECommandCaches.
  *
+ * @since 1.0.0
  * @author Frank Baumann, Daniel Saukel, Fyreum
  */
 public class ECommandExecutor implements CommandExecutor {

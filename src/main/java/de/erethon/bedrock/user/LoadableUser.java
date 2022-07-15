@@ -1,12 +1,13 @@
-package de.erethon.bedrock.loading;
+package de.erethon.bedrock.user;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
- * This class is the base foundation for the {@link UserCacheLoader} class.
+ * This class is the base foundation for the {@link UserCache} class.
  *
+ * @since 1.0.0
  * @author Fyreum
  */
 public interface LoadableUser {
@@ -39,6 +40,8 @@ public interface LoadableUser {
 
     /**
      * This method is called when the player gets unloaded.
+     *
+     * @since 1.1.0
      */
     default void onUnload() {
 

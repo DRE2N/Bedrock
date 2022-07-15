@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class MessageHandler {
@@ -178,6 +179,15 @@ public class MessageHandler {
         return getMessage(message, false, args);
     }
 
+    /**
+     * Returns the formatted message String.
+     *
+     * @param message the message
+     * @param legacy if legacy codes are allowed
+     * @return the formatted message String;
+     *         null, if the path is null;
+     *         a placeholder, if the configuration is erroneous.
+     */
     public String getMessage(Message message, boolean legacy) {
         return getMessage(getDefaultLanguage(), message, legacy);
     }
@@ -203,6 +213,7 @@ public class MessageHandler {
      * @return the formatted message Component;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.1
      */
     public Component message(Message message) {
         return message(getDefaultLanguage(), message);
@@ -216,6 +227,7 @@ public class MessageHandler {
      * @return the formatted message Component;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.1
      */
     public Component message(String language, Message message) {
         return MessageUtil.parse(getRaw(language, message));
@@ -229,6 +241,7 @@ public class MessageHandler {
      * @return the formatted message Component;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.1
      */
     public Component message(Message message, String... args) {
         return message(getDefaultLanguage(), message, args);
@@ -243,6 +256,7 @@ public class MessageHandler {
      * @return the formatted message Component;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.1
      */
     public Component message(String language, Message message, String... args) {
         return MessageUtil.parse(getMessage(language, message, args));
@@ -256,6 +270,7 @@ public class MessageHandler {
      * @return the formatted Component message;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.1
      */
     public Component message(Message message, Component... args) {
         return message(getDefaultLanguage(), message, args);
@@ -270,6 +285,7 @@ public class MessageHandler {
      * @return the formatted message Component;
      *         null, if the path is null;
      *         a placeholder, if the configuration is erroneous.
+     * @since 1.2.1
      */
     public Component message(String language, Message message, Component... args) {
         Component output = message(language, message);

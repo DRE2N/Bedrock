@@ -3,6 +3,7 @@ package de.erethon.bedrock.chat;
 import net.kyori.adventure.text.Component;
 
 /**
+ * @since 1.0.0
  * @author SirSpoodles, Sataniel, Fyreum
  */
 public enum DefaultFontInfo {
@@ -168,6 +169,12 @@ public enum DefaultFontInfo {
         return MessageUtil.parse(center(MessageUtil.serialize(message)));
     }
 
+    /**
+     * Returns a string with the necessary amount of spaces, to center the message in the chat.
+     *
+     * @param message the message to center
+     * @return a string with the necessary amount of spaces, to center the message in the chat
+     */
     public static String getCenterSpaces(String message) {
         if (message == null || message.isEmpty()) {
             return "";
@@ -186,6 +193,13 @@ public enum DefaultFontInfo {
         return sb.toString();
     }
 
+    /**
+     * Returns the length of the message in pixels.
+     *
+     * @param message the message to measure
+     * @return the length of the message in pixels
+     * @since 1.2.1
+     */
     public static int getLength(String message) {
         // Remove component tags and bypass MiniMessage legacy char exception by temporarily replacing affected chars
         message = MessageUtil.replaceLegacyChars(message);

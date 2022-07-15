@@ -33,6 +33,7 @@ import static org.bukkit.block.BlockFace.WEST_NORTH_WEST;
 import static org.bukkit.block.BlockFace.WEST_SOUTH_WEST;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class BlockUtil {

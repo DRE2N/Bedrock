@@ -3,6 +3,7 @@ package de.erethon.bedrock.config.storage;
 /**
  * This enum defines the loading and saving behaviour of a {@link StorageDataField}.
  *
+ * @since 1.1.0
  * @author Fyreum
  */
 public enum Nullability {

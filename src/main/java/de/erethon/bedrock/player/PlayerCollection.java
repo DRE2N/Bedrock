@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public class PlayerCollection implements Iterable<UUID> {

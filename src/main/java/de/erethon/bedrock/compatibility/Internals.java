@@ -9,6 +9,7 @@ import java.util.Set;
 /**
  * This enumeration represents package versions.
  *
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public enum Internals {

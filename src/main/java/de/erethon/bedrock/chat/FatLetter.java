@@ -3,6 +3,7 @@ package de.erethon.bedrock.chat;
 import java.lang.reflect.Field;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel
  */
 public class FatLetter {

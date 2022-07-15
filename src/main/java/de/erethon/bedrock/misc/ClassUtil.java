@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * @since 1.1.0
  * @author Fyreum
  */
 public class ClassUtil {

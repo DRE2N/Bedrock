@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public abstract class EConfig {
@@ -84,11 +85,29 @@ public abstract class EConfig {
         return false;
     }
 
+    /**
+     * Returns the string list at given path, or the default value.
+     *
+     * @param path the path
+     * @param def the default value
+     * @return the string list at given path, or the default value
+     *
+     * @since 1.2.1
+     */
     protected List<String> getStringList(String path, List<String> def) {
         List<String> list = config.getStringList(path);
         return list.isEmpty() ? def : list;
     }
 
+    /**
+     * Returns the integer list at given path, or the default value.
+     *
+     * @param path the path
+     * @param def the default value
+     * @return the integer list at given path, or the default value
+     *
+     * @since 1.2.1
+     */
     protected List<Integer> getIntegerList(String path, List<Integer> def) {
         List<Integer> list = config.getIntegerList(path);
         return list.isEmpty() ? def : list;

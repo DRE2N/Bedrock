@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
 public abstract class ECommand {

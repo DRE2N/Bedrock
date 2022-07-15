@@ -8,18 +8,21 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * This class offers the possibility to initialize, load and save data at specified configuration paths.
- * To use this annotation the respective class has to extend the {@link StorageDataContainer}.
- * The annotated field will be stored and managed by the given class StorageDataContainer.
- *
+ * This annotation offers the possibility to initialize, load and save data at specified configuration paths.
+ * To use this annotation the respective class has to extend the {@link StorageDataContainer},
+ * or annotated with the {@link AdditionalContainer} class by a container.
+ * The annotated field will be stored and managed by the given StorageDataContainer.
+ * <br>
  * Note: Every class type annotated has to be registered at the {@link StorageDataTranslators} class
  *       first, in order to work. To do so, a {@link StorageDataSerializer} and {@link StorageDataDeserializer}
  *       need to be defined.
- *
+ * <br>
  * Be aware, that this storage system is designed to be used to store simple data types.
  * Complex data types like {@link Map} or {@link Collection} are not guaranteed
  * to work always perfectly.
- * That being said, using multiple maps in collections or other maps are likely to fail.
+ *
+ * @since 1.1.0
+ * @author Fyreum
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
+ * @since 1.2.1
  * @author Fyreum
  */
 public class JavaUtil {
