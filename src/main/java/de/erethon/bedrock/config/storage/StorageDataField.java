@@ -129,6 +129,7 @@ public final class StorageDataField {
                 value = deserialize(value, type, 0, 0);
             } catch (Exception e) {
                 e.printStackTrace();
+                value = null;
             }
         }
         if (value == null) {
