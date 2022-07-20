@@ -72,8 +72,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>english.yml</include>
-                    <include>german.yml</include>
+                    <include>bedrock/*</include>
                 </includes>
             </resource>
         </resources>
@@ -108,13 +107,13 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-base</artifactId>
-            <version>2.2.1</version>
+            <version>3.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>2.2.1</version>
+            <version>3.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
