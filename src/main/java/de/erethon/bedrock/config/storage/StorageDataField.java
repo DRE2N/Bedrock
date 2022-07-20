@@ -72,12 +72,12 @@ public final class StorageDataField {
             return null;
         }
         StorageDataTranslator<?> translator = StorageDataTranslators.get(type);
-        return translator.serialize(value);
+        return translator.serialize(value, type);
     }
 
     private Object deserialize(Object value, Class<?> type, int keyIndex, int valueIndex) throws NullPointerException {
         StorageDataTranslator<?> translator = StorageDataTranslators.get(type);
-        Object deserialized = translator.deserialize(value);
+        Object deserialized = translator.deserialize(value, type);
 
         if (deserialized instanceof Collection<?> list) {
             if (list.isEmpty()) {

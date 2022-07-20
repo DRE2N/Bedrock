@@ -10,6 +10,15 @@ public interface StorageDataDeserializer<T> {
     /**
      * Returns the deserialized object or null
      */
-    T deserialize(Object serialized);
+    T deserialize(Object serialized, Class<?> exactType);
 
+    interface CompactDeserializer<T> extends StorageDataDeserializer<T> {
+
+        @Override
+        default T deserialize(Object serialized, Class<?> exactType) {
+            return deserialize(serialized);
+        }
+
+        T deserialize(Object serialized);
+    }
 }

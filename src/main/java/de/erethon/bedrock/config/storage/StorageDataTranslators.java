@@ -7,6 +7,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,7 +58,7 @@ public class StorageDataTranslators {
                 if (deserialized == null) {
                     continue;
                 }
-                Object serialized = get(deserialized.getClass()).serialize(deserialized);
+                Object serialized = get(deserialized.getClass()).serialize(deserialized, deserialized.getClass());
                 serializedList.add(serialized);
             }
             return serializedList;
@@ -66,12 +73,42 @@ public class StorageDataTranslators {
                 if (v == null) {
                     return;
                 }
-                Object key = get(k.getClass()).serialize(k);
-                Object value = get(v.getClass()).serialize(v);
+                Object key = get(k.getClass()).serialize(k, k.getClass());
+                Object value = get(v.getClass()).serialize(v, v.getClass());
                 serializedMap.put(key, value);
             });
             return serializedMap;
         }, ConfigUtil::getMap));
+        registerDataTranslator(new StorageDataTranslator<>(Enum.class, (Object o) -> ((Enum<?>) o).name(), (o, t) -> {
+            if (t.isEnum()) {
+                for (Object enumConstant : t.getEnumConstants()) {
+                    if (enumConstant.toString().equalsIgnoreCase((String) o)) {
+                        return (Enum<?>) enumConstant;
+                    }
+                }
+            }
+            return null;
+        }));
+        registerDataTranslator(new StorageDataTranslator<>(Serializable.class, o -> {
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+                objectOutputStream.writeObject(o);
+                objectOutputStream.flush();
+                return byteArrayOutputStream.toByteArray();
+            } catch (IOException i) {
+                i.printStackTrace();
+                return null;
+            }
+        }, o -> {
+            try {
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream((byte[]) o);
+                ObjectInput objectInputStream = new ObjectInputStream(byteArrayInputStream);
+                return (Serializable) objectInputStream.readObject();
+            } catch (IOException | ClassNotFoundException i) {
+                i.printStackTrace();
+                return null;
+            }
+        }));
     }
 
     /**
@@ -93,6 +130,9 @@ public class StorageDataTranslators {
     public static @NotNull StorageDataTranslator<?> get(@NotNull Class<?> type) {
         StorageDataTranslator<?> translator = dataTranslators.get(ClassUtil.getClass(type));
         if (translator == null) {
+            if (type.isEnum()) {
+                return dataTranslators.get(Enum.class);
+            }
             if (ClassUtil.isImplementing(type, Collection.class)) {
                 return dataTranslators.get(Collection.class);
             }
