@@ -182,21 +182,33 @@ public abstract class ECommand {
 
     /* assertion */
 
+    /**
+     * @since 1.2.2
+     */
     @Contract("false -> fail")
     protected void assure(boolean b) {
         assure(b, getHelp());
     }
 
+    /**
+     * @since 1.2.2
+     */
     @Contract("false, _ -> fail")
     protected void assure(boolean b, Message message) {
         assure(b, message.getMessage());
     }
 
+    /**
+     * @since 1.2.2
+     */
     @Contract("false, _, _ -> fail")
     protected void assure(boolean b, @NotNull Message msg, @NotNull String... args) {
         assure(b, msg.getMessage(args));
     }
 
+    /**
+     * @since 1.2.2
+     */
     @Contract("false, _ -> fail")
     protected void assure(boolean b, String msg) {
         if (!b) {
