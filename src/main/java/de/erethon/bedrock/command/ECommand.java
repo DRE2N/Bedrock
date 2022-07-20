@@ -4,7 +4,11 @@ import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.config.Message;
 import de.erethon.bedrock.misc.InfoUtil;
+import de.erethon.bedrock.misc.JavaUtil;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +23,7 @@ import java.util.Set;
  * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
-public abstract class ECommand {
+public abstract class ECommand implements CommandExecutor, TabCompleter {
 
     private String command;
     private final Set<String> aliases = new HashSet<>();
@@ -34,6 +38,7 @@ public abstract class ECommand {
     private String permission;
     private boolean playerCommand;
     private boolean consoleCommand;
+    private boolean registerSeparately;
     private final CommandCache subCommands = new CommandCache();
     private String executionPrefix = "";
 
@@ -81,6 +86,44 @@ public abstract class ECommand {
      */
     public boolean senderHasPermissions(CommandSender sender) {
         return permission == null || permission.isEmpty() || sender.hasPermission(permission);
+    }
+
+    /* command logic */
+
+    /**
+     * @since 1.2.4
+     */
+    @Override
+    public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (sender instanceof Player player) {
+            if (!isPlayerCommand()) {
+                MessageUtil.sendMessage(player, BedrockMessage.CMD_NO_PLAYER_COMMAND.getMessage());
+                return true;
+            }
+            if (!senderHasPermissions(player)) {
+                MessageUtil.sendMessage(player, BedrockMessage.CMD_NO_PERMISSION.getMessage());
+                return true;
+            }
+        } else {
+            if (!isConsoleCommand()) {
+                MessageUtil.log(BedrockMessage.CMD_NO_CONSOLE_COMMAND.getMessage());
+                return true;
+            }
+        }
+        if (args.length < getMinArgs() | args.length > getMaxArgs()) {
+            displayHelp(sender);
+            return true;
+        }
+        execute(JavaUtil.addBeforeArray(args, label), sender);
+        return true;
+    }
+
+    /**
+     * @since 1.2.4
+     */
+    @Override
+    public final List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        return tabComplete(sender, JavaUtil.addBeforeArray(args, alias));
     }
 
     /**
@@ -423,6 +466,22 @@ public abstract class ECommand {
      */
     public void setConsoleCommand(boolean consoleCommand) {
         this.consoleCommand = consoleCommand;
+    }
+
+    /**
+     * @return if this command should be registered separately
+     * @since 1.2.4
+     */
+    public boolean isRegisterSeparately() {
+        return registerSeparately;
+    }
+
+    /**
+     * @param registerSeparately set if this command should be registered separately
+     * @since 1.2.4
+     */
+    public void setRegisterSeparately(boolean registerSeparately) {
+        this.registerSeparately = registerSeparately;
     }
 
     /**

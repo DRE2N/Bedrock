@@ -38,7 +38,7 @@ This library is an updated paper-only version of [DRECommons](https://github.com
 ```xml
 <repositories>
     <repository>
-        <id>dre-repo</id>
+        <id>erethon-repo</id>
         <url>https://erethon.de/repo</url>
     </repository>
 </repositories>
@@ -46,7 +46,7 @@ This library is an updated paper-only version of [DRECommons](https://github.com
 <dependency>
     <groupId>de.erethon</groupId>
     <artifactId>bedrock</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.4</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -61,6 +61,6 @@ repositories {
 }
 
 dependencies {
-    implementation("de.erethon:bedrock:1.2.2")
+    implementation("de.erethon:bedrock:1.2.4")
 }
 ```

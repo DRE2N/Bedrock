@@ -1,12 +1,18 @@
 package de.erethon.bedrock.command;
 
+import de.erethon.bedrock.chat.MessageUtil;
+import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.plugin.EPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -73,9 +79,53 @@ public class ECommandCache extends CommandCache implements TabCompleter {
      * @param plugin the plugin that registers the command.
      */
     public void register(JavaPlugin plugin) {
+        for (ECommand command : commands) {
+            if (!command.isRegisterSeparately()) {
+                continue;
+            }
+            registerCommand(plugin, command);
+        }
         plugin.getCommand(label).setExecutor(executor);
         if (tabCompletion) {
             plugin.getCommand(label).setTabCompleter(this);
+        }
+    }
+
+    private void registerCommand(JavaPlugin plugin, ECommand command) {
+        if (command.getHelp() == null) {
+            command.setDefaultHelp();
+        }
+        PluginCommand pluginCommand = plugin.getCommand(command.getCommand());
+        if (pluginCommand != null) {
+            pluginCommand.setExecutor(command);
+            pluginCommand.setTabCompleter(command);
+        } else {
+            registerNewCommand(plugin, command);
+        }
+    }
+
+    private void registerNewCommand(JavaPlugin plugin, ECommand command) {
+        try {
+            final Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
+            c.setAccessible(true);
+            final PluginCommand bukkitCommand = c.newInstance(command.getCommand(), plugin);
+            if (command.getAliases() != null) {
+                bukkitCommand.setAliases(new ArrayList<>(command.getAliases()));
+            }
+            if (command.getDescription() != null) {
+                bukkitCommand.setDescription(command.getDescription());
+            }
+            if (command.getUsage() != null) {
+                bukkitCommand.setUsage(command.getUsage());
+            }
+            bukkitCommand.setPermission(command.getPermission());
+            bukkitCommand.permissionMessage(BedrockMessage.CMD_NO_PERMISSION.message());
+            bukkitCommand.setTabCompleter(command);
+            bukkitCommand.setExecutor(command);
+
+            Bukkit.getCommandMap().register(label, bukkitCommand);
+        } catch (Exception e) {
+            MessageUtil.log("Couldn't register command '" + command.getCommand() + "' cause: " + e.getMessage());
         }
     }
 
