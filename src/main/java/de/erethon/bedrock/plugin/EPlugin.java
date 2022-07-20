@@ -99,6 +99,18 @@ public class EPlugin extends JavaPlugin {
     }
 
     /**
+     * Creates the folder if it doesn't exist.
+     *
+     * @param folder the folder to initialize
+     * @since 1.2.4
+     */
+    protected void initFolder(File folder) {
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+    }
+
+    /**
      * load / reload a new instance of Permission
      */
     public void loadEconomyProvider() {
