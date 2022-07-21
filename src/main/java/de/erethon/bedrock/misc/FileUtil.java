@@ -37,6 +37,24 @@ public class FileUtil {
     }
 
     /**
+     * @param folder the folder to check
+     * @return a List of subfolders inside the folder.
+     * @since 1.2.4
+     */
+    public static List<File> getSubFolders(File folder) {
+        List<File> subFolders = new ArrayList<>();
+        if (!folder.isDirectory()) {
+            throw new IllegalArgumentException("File \"" + folder.getName() + "\" is not a directory");
+        }
+        for (File file : folder.listFiles()) {
+            if (file.isDirectory()) {
+                subFolders.add(file);
+            }
+        }
+        return subFolders;
+    }
+
+    /**
      * Copies a file or directory
      *
      * @param inFile  the File to copy
