@@ -569,10 +569,47 @@ public class MessageUtil {
      * @return the replaced string
      */
     public static String replaceLegacyChars(String string) {
-        for (ChatColor color : ChatColor.values()) {
-            string = string.replace("&" + color.getChar(), "<" + color.name().toLowerCase() + ">");
+        StringBuilder sb = new StringBuilder();
+        boolean found = false;
+        for (char c : string.toCharArray()) {
+            if (found) {
+                if (c == '&') {
+                    sb.append('&');
+                    continue;
+                }
+                sb.append(switch (c) {
+                    case '0' -> "<black>";
+                    case '1' -> "<dark_blue>";
+                    case '2' -> "<dark_green>";
+                    case '3' -> "<dark_aqua>";
+                    case '4' -> "<dark_red>";
+                    case '5' -> "<dark_purple>";
+                    case '6' -> "<gold>";
+                    case '7' -> "<gray>";
+                    case '8' -> "<dark_gray>";
+                    case '9' -> "<blue>";
+                    case 'a' -> "<green>";
+                    case 'b' -> "<aqua>";
+                    case 'c' -> "<red>";
+                    case 'd' -> "<light_purple>";
+                    case 'e' -> "<yellow>";
+                    case 'f' -> "<white>";
+                    case 'k' -> "<obfuscated>";
+                    case 'l' -> "<bold>";
+                    case 'm' -> "<strikethrough>";
+                    case 'n' -> "<underline>";
+                    case 'o' -> "<italic>";
+                    case 'r' -> "<reset>";
+                    default -> "&" + c;
+                });
+                found = false;
+            } else if (c == '&') {
+                found = true;
+            } else {
+                sb.append(c);
+            }
         }
-        return string;
+        return sb.toString();
     }
 
 }
