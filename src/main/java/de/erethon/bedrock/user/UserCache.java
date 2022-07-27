@@ -120,14 +120,25 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * If no user is found, it will try to create a new one.
      *
      * @param name the name to get the user for
+     * @return the matching user, or null
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
     public USER getByName(@NotNull String name) {
         UUID uuid = nameToId.get(name);
-        if (uuid == null) {
-            uuid = Bukkit.getOfflinePlayer(name).getUniqueId();
-        }
-        return getByUniqueId(uuid);
+        return getByPlayer(uuid != null ? Bukkit.getOfflinePlayer(uuid) : Bukkit.getOfflinePlayer(name));
+    }
+
+    /**
+     * Returns the cached user matching the name if found.
+     *
+     * @param name the name to get the user for
+     * @return the matching user, or null
+     * @since 1.2.4
+     * @see UserCache#getNewInstance(OfflinePlayer)
+     */
+    public USER getByNameIfCached(@NotNull String name) {
+        UUID uuid = nameToId.get(name);
+        return uuid == null ? null : getByUniqueIdIfCached(uuid);
     }
 
     /**
@@ -135,14 +146,24 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * If no user is found, it will try to create a new one.
      *
      * @param uuid the uuid to get the user for
+     * @return the matching user, or null
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
     public USER getByUniqueId(@NotNull UUID uuid) {
         USER user = idToUser.get(uuid);
-        if (user != null) {
-            return user;
-        }
-        return getNewInstance(Bukkit.getOfflinePlayer(uuid));
+        return user != null ? user : getNewInstance(Bukkit.getOfflinePlayer(uuid));
+    }
+
+    /**
+     * Returns the cached user matching the uuid if found.
+     *
+     * @param uuid the uuid to get the user for
+     * @return the matching user, or null
+     * @since 1.2.4
+     * @see UserCache#getNewInstance(OfflinePlayer)
+     */
+    public USER getByUniqueIdIfCached(@NotNull UUID uuid) {
+        return idToUser.get(uuid);
     }
 
     /**
@@ -152,14 +173,26 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * <b>Note:</b> online players should always be <b>not</b> null.
      *
      * @param player the player to get the user for
+     * @return the matching user, or null
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
     public USER getByPlayer(@NotNull OfflinePlayer player) {
         USER user = idToUser.get(player.getUniqueId());
-        if (user != null) {
-            return user;
-        }
-        return getNewInstance(player);
+        return user != null ? user : getNewInstance(player);
+    }
+
+    /**
+     * Returns the cached user matching the player if found.
+     * <br>
+     * <b>Note:</b> online players should always be <b>not</b> null.
+     *
+     * @param player the player to get the user for
+     * @return the matching user, or null
+     * @since 1.2.4
+     * @see UserCache#getNewInstance(OfflinePlayer)
+     */
+    public USER getByPlayerIfCached(@NotNull OfflinePlayer player) {
+        return idToUser.get(player.getUniqueId());
     }
 
     /**
@@ -206,7 +239,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * This method tries to create a new user instance for the given player.
      * This method can return null if the given {@link OfflinePlayer} never played before or isn't online.
      * <br>
-     * <b>Note:</b> online players should always be not null.
+     * <b>Note:</b> online players should always be <b>not</b> null.
      *
      * @param player the player to get the user for
      * @return a new user object if possible, else null
@@ -237,11 +270,13 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
     @EventHandler
     public void onQuit(@NotNull PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        USER user = getByPlayerIfCached(player);
 
-        USER user = getByPlayer(player);
-        if (user != null) {
-            user.onQuit(event);
+        if (user == null) {
+            return;
         }
+        user.onQuit(event);
+
         if (unloadAfter < 0) {
             return;
         }
