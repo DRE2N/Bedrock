@@ -148,8 +148,8 @@ public class EPlugin extends JavaPlugin {
     public void reloadBedrockMessageHandler() {
         languagesFolder = new File(getDataFolder().getParent(), "/Bedrock/languages");
         languagesFolder.mkdirs();
-        attemptToSaveBedrockMessageResource("bedrock/english.yml", false);
-        attemptToSaveBedrockMessageResource("bedrock/german.yml", false);
+        attemptToSaveBedrockMessageResource("english.yml", false);
+        attemptToSaveBedrockMessageResource("german.yml", false);
         bedrockMessageHandler = new MessageHandler(languagesFolder);
     }
 
@@ -167,16 +167,19 @@ public class EPlugin extends JavaPlugin {
      */
     public boolean attemptToSaveBedrockMessageResource(String resource, boolean replace) {
         File file = new File(languagesFolder, resource);
+        String jarResource = "bedrock/" + resource;
         if (replace || !file.exists()) {
             try {
-                saveResource(resource, replace);
-                Files.move(new File(getDataFolder(), resource), file);
+                saveResource(jarResource, replace);
+                File tempFolder = new File(getDataFolder(), "bedrock");
+                Files.move(new File(tempFolder, resource), file);
+                tempFolder.delete(); // delete temp folder if empty
                 return true;
             } catch (IllegalArgumentException | IOException exception) {
                 return false;
             }
         } else {
-            return initializeResourceValues(resource, file);
+            return initializeResourceValues(jarResource, file);
         }
     }
 
