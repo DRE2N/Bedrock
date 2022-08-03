@@ -5,6 +5,7 @@ import de.erethon.bedrock.misc.ClassUtil;
 import de.erethon.bedrock.misc.StringIgnoreCase;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
@@ -33,13 +34,14 @@ public class StorageDataTranslators {
 
     static {
         registerDataTranslator(new StorageDataTranslator<>(Boolean.class, o -> o, o -> (boolean) o));
-        registerDataTranslator(new StorageDataTranslator<>(Double.class, o -> o, o -> (double) o));
-        registerDataTranslator(new StorageDataTranslator<>(Integer.class, o -> o, o -> (int) o));
-        registerDataTranslator(new StorageDataTranslator<>(Long.class, o -> o, o -> (long) o));
+        registerDataTranslator(new StorageDataTranslator<>(Double.class, o -> o, NumberConversions::toDouble));
+        registerDataTranslator(new StorageDataTranslator<>(Float.class, o -> o, NumberConversions::toFloat));
+        registerDataTranslator(new StorageDataTranslator<>(Integer.class, o -> o, NumberConversions::toInt));
+        registerDataTranslator(new StorageDataTranslator<>(Long.class, o -> o, NumberConversions::toLong));
         registerDataTranslator(new StorageDataTranslator<>(Object.class, o -> o, o -> o));
-        registerDataTranslator(new StorageDataTranslator<>(Short.class, o -> o, o -> (short) o));
-        registerDataTranslator(new StorageDataTranslator<>(String.class, o -> o, o -> (String) o));
-        registerDataTranslator(new StorageDataTranslator<>(StringIgnoreCase.class, Object::toString, o -> new StringIgnoreCase((String) o)));
+        registerDataTranslator(new StorageDataTranslator<>(Short.class, o -> o, NumberConversions::toShort));
+        registerDataTranslator(new StorageDataTranslator<>(String.class, o -> o, Object::toString));
+        registerDataTranslator(new StorageDataTranslator<>(StringIgnoreCase.class, Object::toString, o -> new StringIgnoreCase(o.toString())));
         registerDataTranslator(new StorageDataTranslator<>(Location.class, o -> ((Location) o).serialize(), o -> {
             Map<String, Object> map = ConfigUtil.getMap(o);
             if (map.containsKey("world") && Bukkit.getWorld((String) map.get("world")) == null) {
