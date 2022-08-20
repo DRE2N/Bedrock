@@ -5,6 +5,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * @since 1.2.1
@@ -55,6 +57,14 @@ public class JavaUtil {
         arrayCopy[0] = s;
         System.arraycopy(array, 0, arrayCopy, 1, array.length);
         return arrayCopy;
+    }
+
+    public static <E> void forEachAndRemove(Iterable<E> iterable, Consumer<E> action) {
+        Iterator<E> iterator = iterable.iterator();
+        while (iterator.hasNext()) {
+            action.accept(iterator.next());
+            iterator.next();
+        }
     }
 
 }
