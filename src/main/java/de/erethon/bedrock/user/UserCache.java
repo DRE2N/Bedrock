@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * A simple class to load and unload user classes.
@@ -202,6 +203,19 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      */
     public Set<USER> getCachedUsers() {
         return new HashSet<>(idToUser.values());
+    }
+
+    /**
+     * Performs the given action for each element of the {@code Iterable}
+     * until all elements have been processed or the action throws an
+     * exception.
+     *
+     * @param action The action to be performed for each element
+     * @throws NullPointerException if the specified action is null
+     * @since 1.2.4
+     */
+    public void forEach(Consumer<USER> action) {
+        idToUser.values().forEach(action);
     }
 
     /**

@@ -59,6 +59,9 @@ public class JavaUtil {
         return arrayCopy;
     }
 
+    /**
+     * @since 1.2.4
+     */
     public static <E> void forEachAndRemove(Iterable<E> iterable, Consumer<E> action) {
         Iterator<E> iterator = iterable.iterator();
         while (iterator.hasNext()) {
