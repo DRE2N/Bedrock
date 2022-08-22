@@ -329,6 +329,16 @@ public abstract class ECommand implements CommandExecutor, TabCompleter {
     }
 
     /**
+     * @param min the minimum amount of arguments to set
+     * @param max the maximum amount of arguments to set
+     * @since 1.2.4
+     */
+    public void setMinMaxArgs(int min, int max) {
+        setMinArgs(min);
+        setMaxArgs(max);
+    }
+
+    /**
      * @return the command the description
      */
     public String getDescription() {
