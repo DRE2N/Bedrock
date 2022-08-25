@@ -99,7 +99,7 @@ public class InfoUtil {
         MessageUtil.sendCenteredMessage(sender, "&4&l[&r &6" + min + "-" + max + " &4/&6 " + send + " &4|&6 " + page + " &4&l]");
 
         for (T info : toSend) {
-            MessageUtil.sendMessage(sender, converter.convert(info));
+            MessageUtil.sendMessage(sender, MessageUtil.serialize(converter.convert(info)));
         }
     }
 
