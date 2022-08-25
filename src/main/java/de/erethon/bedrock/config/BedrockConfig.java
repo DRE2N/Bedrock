@@ -12,6 +12,7 @@ public class BedrockConfig extends EConfig {
 
     private boolean updaterEnabled = true;
     private int commandsPerHelpPage = 6;
+    private int informationPerPage = 6;
 
     public BedrockConfig(File file) {
         super(file, CONFIG_VERSION);
@@ -26,6 +27,7 @@ public class BedrockConfig extends EConfig {
     public void initialize() {
         initValue("updaterEnabled", updaterEnabled);
         initValue("commandsPerHelpPage", commandsPerHelpPage);
+        initValue("informationPerPage", informationPerPage);
         save();
     }
 
@@ -33,6 +35,7 @@ public class BedrockConfig extends EConfig {
     public void load() {
         updaterEnabled = config.getBoolean("updaterEnabled", updaterEnabled);
         commandsPerHelpPage = config.getInt("commandsPerHelpPage", commandsPerHelpPage);
+        informationPerPage = config.getInt("informationPerPage", informationPerPage);
     }
 
     public boolean isUpdaterEnabled() {
@@ -41,5 +44,12 @@ public class BedrockConfig extends EConfig {
 
     public int getCommandsPerHelpPage() {
         return commandsPerHelpPage;
+    }
+
+    /**
+     * @since 1.2.4
+     */
+    public int getInformationPerPage() {
+        return informationPerPage;
     }
 }

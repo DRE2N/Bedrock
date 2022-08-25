@@ -50,32 +50,56 @@ public class InfoUtil {
             MessageUtil.sendMessage(sender, BedrockMessage.CMD_NO_PERMISSION.getMessage());
             return;
         }
-        ArrayList<ECommand> toSend = new ArrayList<>();
 
-        int page = 1;
-        if (args.length == 2) {
-            page = NumberUtil.parseInt(args[1], 1);
-        }
+        int page = args.length == 2 ? NumberUtil.parseInt(args[1], 1) : 1;
+        int perPage = EPlugin.getInstance().getBedrockConfig().getCommandsPerHelpPage();
+
+        sendPaginatedInfo(sender, sorted, header, eCommand -> {
+            String prefix = commandPrefix ? "&2" + eCommand.getCommand() + "&8 - &7" : "";
+            return MessageUtil.parse(prefix + eCommand.getHelp());
+        }, page, perPage);
+    }
+
+    /**
+     * @since 1.2.4
+     */
+    public static <T> void sendPaginatedInfo(CommandSender sender, Collection<T> information, String headerName, ComponentConverter<T> converter) {
+        sendPaginatedInfo(sender, information, headerName, converter, 1);
+    }
+
+    /**
+     * @since 1.2.4
+     */
+    public static <T> void sendPaginatedInfo(CommandSender sender, Collection<T> information, String headerName, ComponentConverter<T> converter, int page) {
+        sendPaginatedInfo(sender, information, headerName, converter, page,
+                EPlugin.getInstance().getBedrockConfig().getInformationPerPage());
+    }
+
+    /**
+     * @since 1.2.4
+     */
+    public static <T> void sendPaginatedInfo(CommandSender sender, Collection<T> information, String headerName,
+                                             ComponentConverter<T> converter, int page, int perPage) {
+        ArrayList<T> toSend = new ArrayList<>();
+
         int send = 0;
         int max = 0;
         int min = 0;
 
-        int perPage = EPlugin.getInstance().getBedrockConfig().getCommandsPerHelpPage();
-        for (ECommand dCommand : sorted) {
+        for (T info : information) {
             send++;
             if (send >= page * perPage - (perPage - 1) && send <= page * perPage) {
                 min = page * perPage - (perPage - 1);
                 max = page * perPage;
-                toSend.add(dCommand);
+                toSend.add(info);
             }
         }
 
-        MessageUtil.sendCenteredMessage(sender, "&4&l[&r &6" + header + " &4&l]");
+        MessageUtil.sendCenteredMessage(sender, "&4&l[&r &6" + headerName + " &4&l]");
         MessageUtil.sendCenteredMessage(sender, "&4&l[&r &6" + min + "-" + max + " &4/&6 " + send + " &4|&6 " + page + " &4&l]");
 
-        for (ECommand dCommand : toSend) {
-            String prefix = commandPrefix ? "&2" + dCommand.getCommand() + "&8 - &7" : "";
-            MessageUtil.sendMessage(sender, prefix + dCommand.getHelp());
+        for (T info : toSend) {
+            MessageUtil.sendMessage(sender, converter.convert(info));
         }
     }
 
