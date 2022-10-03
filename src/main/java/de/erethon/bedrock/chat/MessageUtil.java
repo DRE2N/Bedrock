@@ -552,6 +552,37 @@ public class MessageUtil {
     }
 
     /**
+     * Parses the string array.
+     * <p>
+     * Translates color codes and MiniMessage tags.
+     *
+     * @param msg the messages to parse
+     * @return the parsed Component array
+     * @since 1.2.4
+     */
+    public static Component[] parse(String... msg) {
+        return parse(mm, msg);
+    }
+
+    /**
+     * Parses the string array.
+     * <p>
+     * Translates color codes and MiniMessage tags.
+     *
+     * @param mm the MiniMessage instance to use
+     * @param msg the messages to parse
+     * @return the parsed Component array
+     * @since 1.2.4
+     */
+    public static Component[] parse(MiniMessage mm, String... msg) {
+        Component[] parsed = new Component[msg.length];
+        for (int i = 0; i < msg.length; i++) {
+            parsed[i] = parse(mm, msg[i]);
+        }
+        return parsed;
+    }
+
+    /**
      * Serializes the msg component.
      *
      * @param msg the message to serialize
