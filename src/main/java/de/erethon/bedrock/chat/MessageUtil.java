@@ -12,8 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @since 1.0.0
@@ -498,7 +501,7 @@ public class MessageUtil {
     /**
      * Parses the string.
      * <p>
-     * Translates color codes and MiniMessage tags
+     * Translates color codes and MiniMessage tags.
      *
      * @param msg the message to parse
      * @return the parsed Component
@@ -510,7 +513,7 @@ public class MessageUtil {
     /**
      * Parses the string.
      * <p>
-     * Translates color codes and MiniMessage tags
+     * Translates color codes and MiniMessage tags.
      *
      * @param mm the MiniMessage instance to use
      * @param msg the message to parse
@@ -519,6 +522,33 @@ public class MessageUtil {
     public static Component parse(MiniMessage mm, String msg) {
         String translated = replaceLegacyChars(msg);
         return mm.deserialize(translated);
+    }
+
+    /**
+     * Parses the string list.
+     * <p>
+     * Translates color codes and MiniMessage tags.
+     *
+     * @param msg the messages to parse
+     * @return the parsed Component list
+     * @since 1.2.4
+     */
+    public static List<Component> parse(Collection<String> msg) {
+        return parse(mm, msg);
+    }
+
+    /**
+     * Parses the string list.
+     * <p>
+     * Translates color codes and MiniMessage tags.
+     *
+     * @param mm the MiniMessage instance to use
+     * @param msg the messages to parse
+     * @return the parsed Component list
+     * @since 1.2.4
+     */
+    public static List<Component> parse(MiniMessage mm, Collection<String> msg) {
+        return msg.stream().map(s -> parse(mm, s)).collect(Collectors.toList());
     }
 
     /**
