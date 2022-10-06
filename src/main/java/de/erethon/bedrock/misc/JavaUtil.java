@@ -70,4 +70,16 @@ public class JavaUtil {
         }
     }
 
+    /**
+     *
+     * @since 1.2.4
+     */
+    public static void runSilent(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception ignored) {
+            // do nothing
+        }
+    }
+
 }
