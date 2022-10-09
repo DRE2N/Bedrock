@@ -34,7 +34,7 @@ public final class StorageDataField {
     private Object initialValue;
     private int loadedHashCode;
 
-    protected StorageDataField(Field field, String subPath) {
+    StorageDataField(Field field, String subPath) {
         StorageData annotation = field.getAnnotation(StorageData.class);
         if (annotation == null) {
             throw new IllegalArgumentException("Missing annotation " + StorageData.class.getName());
@@ -63,7 +63,7 @@ public final class StorageDataField {
         return subPath + (path.isEmpty() ? field.getName() : path);
     }
 
-    protected void loadInitialValue(StorageDataContainer container) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    void loadInitialValue(StorageDataContainer container) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         this.initialValue = getValue(container);
     }
 
@@ -104,7 +104,7 @@ public final class StorageDataField {
         return deserialized;
     }
 
-    protected void initialize(StorageDataContainer container) {
+    void initialize(StorageDataContainer container) {
         if (!initialize) {
             return;
         }
@@ -119,7 +119,7 @@ public final class StorageDataField {
         config.set(path, serialize(initialValue));
     }
 
-    protected void load(StorageDataContainer container) throws NullPointerException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    void load(StorageDataContainer container) throws NullPointerException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         Object value = container.getConfig().get(path);
         if (value instanceof ConfigurationSection section) { // convert ConfigurationSection to Map<String, Object>
             value = section.getValues(false);
@@ -172,7 +172,7 @@ public final class StorageDataField {
         field.set(container, value);
     }
 
-    protected void save(StorageDataContainer container) throws IllegalAccessException {
+    void save(StorageDataContainer container) throws IllegalAccessException {
         if (saveSetting == StorageDataSave.NONE) {
             return;
         }
@@ -300,7 +300,7 @@ public final class StorageDataField {
         return loadedHashCode;
     }
 
-    protected Object getValue(StorageDataContainer container) throws IllegalAccessException {
+    private Object getValue(StorageDataContainer container) throws IllegalAccessException {
         field.setAccessible(true);
         return field.get(container);
     }
