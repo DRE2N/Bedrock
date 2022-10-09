@@ -150,7 +150,7 @@ public final class StorageDataField {
                 debug("Loading value '" + value + "' from '" + path + "'...");
                 list.addAll(c);
                 return;
-            } else if (!type.getName().equals(Object.class.getName()) && !type.getName().equals(ArrayList.class.getName())) {
+            } else if (type != Object.class && type != ArrayList.class) {
                 Constructor<? extends Collection> constructor = (Constructor<? extends Collection>) type.getDeclaredConstructor(Collection.class);
                 constructor.setAccessible(true);
                 value = constructor.newInstance(value);
@@ -160,7 +160,7 @@ public final class StorageDataField {
                 debug("Loading value '" + value + "' from '" + path + "'...");
                 map.putAll(m);
                 return;
-            } else if (!type.getName().equals(Object.class.getName()) && !type.getName().equals(HashMap.class.getName())) {
+            } else if (type != Object.class && type != HashMap.class) {
                 Constructor<? extends Map> constructor = (Constructor<? extends Map>) type.getDeclaredConstructor(Map.class);
                 constructor.setAccessible(true);
                 value = constructor.newInstance(value);
