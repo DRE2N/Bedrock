@@ -13,6 +13,7 @@ public class CompatibilityHandler {
     private final Version version;
     private final boolean spigot;
     private final boolean paper;
+    private final boolean papyrus;
 
     private CompatibilityHandler() {
         instance = this;
@@ -20,6 +21,7 @@ public class CompatibilityHandler {
         version = Version.getByServer();
         spigot = Package.getPackage("org.spigotmc") != null;
         paper = Package.getPackage("com.destroystokyo.paper") != null;
+        papyrus = Package.getPackage("de.erethon.papyrus") != null;
     }
 
     /**
@@ -56,6 +58,15 @@ public class CompatibilityHandler {
      */
     public boolean isPaper() {
         return paper;
+    }
+
+    /**
+     * Returns if the server software implements the Papyrus API
+     *
+     * @return if the server software implements the Papyrus API
+     */
+    public boolean isPapyrus() {
+        return papyrus;
     }
 
     /* statics */
