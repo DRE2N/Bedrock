@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,7 +62,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @param player the player to load
      * @return the loaded user
      */
-    public USER load(@NotNull Player player) {
+    public @NotNull USER load(@NotNull Player player) {
         USER user = getNewInstance(player);
         if (user == null) {
             throw new NullPointerException("The user instance for " + player.getName() + " is null -> getNewInstance(OfflinePlayer) has to return a NotNull instance for online players");
@@ -71,6 +72,33 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
 
         nameToId.put(name, uuid);
         idToUser.put(uuid, user);
+        return user;
+    }
+
+    /**
+     * Loads the user object for the given offline player and returns the loaded user, or null.
+     *
+     * @param offlinePlayer the player to load
+     * @return the loaded user, or null
+     * @since 1.2.4
+     */
+    public @Nullable USER load(@NotNull OfflinePlayer offlinePlayer) {
+        Player player = offlinePlayer.getPlayer();
+        if (player != null) {
+            return load(player);
+        }
+        USER user = getNewInstance(offlinePlayer);
+        if (user == null) {
+            return null;
+        }
+        UUID uuid = offlinePlayer.getUniqueId();
+        String name = offlinePlayer.getName();
+
+        if (name != null) {
+            nameToId.put(name, uuid);
+        }
+        idToUser.put(uuid, user);
+        scheduleUnloadTask(offlinePlayer);
         return user;
     }
 
@@ -87,9 +115,9 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * Unloads the given player and call the {@link LoadableUser#saveUser()} method and returns the unloaded user.
      *
      * @param player the player to unload
-     * @return the unloaded user
+     * @return the unloaded user, or null
      */
-    public USER unload(@NotNull Player player) {
+    public @Nullable USER unload(@NotNull OfflinePlayer player) {
         USER user = idToUser.get(player.getUniqueId());
         if (user != null) {
             user.saveUser();
@@ -124,7 +152,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @return the matching user, or null
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByName(@NotNull String name) {
+    public @Nullable USER getByName(@NotNull String name) {
         UUID uuid = nameToId.get(name);
         return getByPlayer(uuid != null ? Bukkit.getOfflinePlayer(uuid) : Bukkit.getOfflinePlayer(name));
     }
@@ -137,7 +165,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @since 1.2.4
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByNameIfCached(@NotNull String name) {
+    public @Nullable USER getByNameIfCached(@NotNull String name) {
         UUID uuid = nameToId.get(name);
         return uuid == null ? null : getByUniqueIdIfCached(uuid);
     }
@@ -150,9 +178,9 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @return the matching user, or null
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByUniqueId(@NotNull UUID uuid) {
+    public @Nullable USER getByUniqueId(@NotNull UUID uuid) {
         USER user = idToUser.get(uuid);
-        return user != null ? user : getNewInstance(Bukkit.getOfflinePlayer(uuid));
+        return user != null ? user : load(Bukkit.getOfflinePlayer(uuid));
     }
 
     /**
@@ -163,7 +191,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @since 1.2.4
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByUniqueIdIfCached(@NotNull UUID uuid) {
+    public @Nullable USER getByUniqueIdIfCached(@NotNull UUID uuid) {
         return idToUser.get(uuid);
     }
 
@@ -177,9 +205,9 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @return the matching user, or null
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByPlayer(@NotNull OfflinePlayer player) {
+    public @Nullable USER getByPlayer(@NotNull OfflinePlayer player) {
         USER user = idToUser.get(player.getUniqueId());
-        return user != null ? user : getNewInstance(player);
+        return user != null ? user : load(player);
     }
 
     /**
@@ -192,7 +220,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @since 1.2.4
      * @see UserCache#getNewInstance(OfflinePlayer)
      */
-    public USER getByPlayerIfCached(@NotNull OfflinePlayer player) {
+    public @Nullable USER getByPlayerIfCached(@NotNull OfflinePlayer player) {
         return idToUser.get(player.getUniqueId());
     }
 
@@ -201,7 +229,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      *
      * @return a Set of all loaded users
      */
-    public Set<USER> getCachedUsers() {
+    public @NotNull Set<USER> getCachedUsers() {
         return new HashSet<>(idToUser.values());
     }
 
@@ -214,7 +242,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @throws NullPointerException if the specified action is null
      * @since 1.2.4
      */
-    public void forEach(Consumer<USER> action) {
+    public void forEach(@NotNull Consumer<USER> action) {
         idToUser.values().forEach(action);
     }
 
@@ -258,7 +286,7 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
      * @param player the player to get the user for
      * @return a new user object if possible, else null
      */
-    protected abstract USER getNewInstance(@NotNull OfflinePlayer player);
+    protected abstract @Nullable USER getNewInstance(@NotNull OfflinePlayer player);
 
     /* listener */
 
@@ -298,6 +326,10 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
             unload(player);
             return;
         }
+        scheduleUnloadTask(player);
+    }
+
+    private void scheduleUnloadTask(OfflinePlayer player) {
         BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> unload(player), unloadAfter);
         idToTask.put(player.getUniqueId(), task);
     }
