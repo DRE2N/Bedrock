@@ -118,7 +118,7 @@ public class InfoUtil {
             sender.sendMessage(BedrockMessage.CMD_NO_PERMISSION.getMessage());
             return;
         }
-        ComponentConverter<ECommand> converter = cmd -> Component.text("&6" + cmd.getCommand())
+        ComponentConverter<ECommand> converter = cmd -> Component.text("&6" + cmd.getCommand() + (cmd.hasSubCommands() ? "&e*" : ""))
                 .clickEvent(ClickEvent.suggestCommand("/" + cmd.getExecutionPrefix() + cmd.getCommand() + " "))
                 .hoverEvent(HoverEvent.showText(
                                 BedrockMessage.HOVER_COMMAND.message(cmd.getCommand()).append(Component.newline()).append(Component.newline())
@@ -135,7 +135,7 @@ public class InfoUtil {
 
     private static String toString(CommandCache commands) {
         int size = commands.getCommands().size();
-        if (size <= 0) {
+        if (size == 0) {
             return BedrockMessage.HOVER_NONE.getMessage();
         }
         if (size == 1) {

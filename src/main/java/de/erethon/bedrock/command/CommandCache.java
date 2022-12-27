@@ -44,6 +44,14 @@ public class CommandCache implements Iterable<ECommand> {
     }
 
     /**
+     * @return if the command cache is not empty
+     * @since 1.2.4
+     */
+    public boolean hasCommands() {
+        return !commands.isEmpty();
+    }
+
+    /**
      * @param commands the commands to add
      */
     public void addCommands(ECommand... commands) {

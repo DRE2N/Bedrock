@@ -502,6 +502,14 @@ public abstract class ECommand implements CommandExecutor, TabCompleter {
     }
 
     /**
+     * @return if this command has sub commands
+     * @since 1.2.4
+     */
+    public boolean hasSubCommands() {
+        return subCommands.hasCommands();
+    }
+
+    /**
      * @return the execution prefix
      */
     public String getExecutionPrefix() {
