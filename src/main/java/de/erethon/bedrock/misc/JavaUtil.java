@@ -24,10 +24,24 @@ public class JavaUtil {
     }
 
     public static String toString(Collection<String> l) {
-        return toString(l.toArray(new String[0]));
+        return toString(l, ", ");
+    }
+
+    /**
+     * @since 1.2.4
+     */
+    public static String toString(Collection<String> l, String separator) {
+        return toString(l.toArray(new String[0]), separator);
     }
 
     public static String toString(String[] a) {
+        return toString(a, ", ");
+    }
+
+    /**
+     * @since 1.2.4
+     */
+    public static String toString(String[] a, String separator) {
         if (a.length == 0) {
             return "";
         }
@@ -38,7 +52,7 @@ public class JavaUtil {
             if (i == a.length - 1) {
                 return sb.toString();
             }
-            sb.append(", ");
+            sb.append(separator);
         }
     }
 
@@ -71,7 +85,6 @@ public class JavaUtil {
     }
 
     /**
-     *
      * @since 1.2.4
      */
     public static void runSilent(Runnable runnable) {
