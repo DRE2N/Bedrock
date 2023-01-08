@@ -197,6 +197,20 @@ public abstract class UserCache<USER extends LoadableUser> implements Listener {
 
     /**
      * Returns the cached user matching the player if found.
+     * If no user is found, it wil create a new one.
+     *
+     * @param player the player to get the user for
+     * @return the matching user
+     * @since 1.2.4
+     * @see UserCache#getNewInstance(OfflinePlayer)
+     */
+    public @NotNull USER getByPlayer(@NotNull Player player) {
+        USER user = idToUser.get(player.getUniqueId());
+        return user != null ? user : load(player);
+    }
+
+    /**
+     * Returns the cached user matching the player if found.
      * If no user is found, it will try to create a new one.
      * <br>
      * <b>Note:</b> online players should always be <b>not</b> null.
