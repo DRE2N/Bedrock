@@ -42,7 +42,20 @@ public class StorageDataTranslators {
         registerDataTranslator(new StorageDataTranslator<>(Short.class, o -> o, NumberConversions::toShort));
         registerDataTranslator(new StorageDataTranslator<>(String.class, o -> o, Object::toString));
         registerDataTranslator(new StorageDataTranslator<>(StringIgnoreCase.class, Object::toString, o -> new StringIgnoreCase(o.toString())));
-        registerDataTranslator(new StorageDataTranslator<>(Location.class, o -> ((Location) o).serialize(), o -> {
+        registerDataTranslator(new StorageDataTranslator<>(Location.class, o -> {
+            Location loc = (Location) o;
+            Map<String, Object> serialized = new HashMap<>(6);
+
+            if (loc.isWorldLoaded()) {
+                serialized.put("world", loc.getWorld().getName());
+            }
+            serialized.put("x", loc.getX());
+            serialized.put("y", loc.getY());
+            serialized.put("z", loc.getZ());
+            serialized.put("yaw", loc.getYaw());
+            serialized.put("pitch", loc.getPitch());
+            return serialized;
+        }, o -> {
             Map<String, Object> map = ConfigUtil.getMap(o);
             if (map.containsKey("world") && Bukkit.getWorld((String) map.get("world")) == null) {
                 map.remove("world");
