@@ -20,6 +20,7 @@ import java.util.Objects;
  */
 public final class StorageDataField {
 
+    private final Object valueContainer;
     private final Field field;
     private final String path;
     private final Class<?> type;
@@ -34,11 +35,12 @@ public final class StorageDataField {
     private Object initialValue;
     private int loadedHashCode;
 
-    StorageDataField(Field field, String subPath) {
+    StorageDataField(Object valueContainer, Field field, String subPath) {
         StorageData annotation = field.getAnnotation(StorageData.class);
         if (annotation == null) {
             throw new IllegalArgumentException("Missing annotation " + StorageData.class.getName());
         }
+        this.valueContainer = valueContainer;
         this.field = field;
         this.path = finalPath(subPath, annotation.path());
         Class<?> exactType = annotation.type();
@@ -63,8 +65,8 @@ public final class StorageDataField {
         return subPath + (path.isEmpty() ? field.getName() : path);
     }
 
-    void loadInitialValue(StorageDataContainer container) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        this.initialValue = getValue(container);
+    void loadInitialValue() throws IllegalAccessException {
+        this.initialValue = getValue();
     }
 
     private Object serialize(Object value) throws NullPointerException {
@@ -169,14 +171,14 @@ public final class StorageDataField {
         log("Loading value '" + path + "'...");
         debug("Loading value '" + value + "' from '" + path + "'...");
 
-        field.set(container, value);
+        field.set(valueContainer, value);
     }
 
     void save(StorageDataContainer container) throws IllegalAccessException {
         if (saveSetting == StorageDataSave.NONE) {
             return;
         }
-        Object value = getValue(container);
+        Object value = getValue();
         if (saveSetting == StorageDataSave.CHANGES && loadedHashCode == Objects.hash(value)) {
             debug("Won't save value '" + path + "': No changes found");
             return;
@@ -208,6 +210,14 @@ public final class StorageDataField {
     }
 
     /* getter */
+
+    /**
+     * @return the value container / the object that stores this field
+     * @since 1.2.5
+     */
+    public Object getValueContainer() {
+        return valueContainer;
+    }
 
     /**
      * @return the object field
@@ -300,9 +310,9 @@ public final class StorageDataField {
         return loadedHashCode;
     }
 
-    private Object getValue(StorageDataContainer container) throws IllegalAccessException {
+    private Object getValue() throws IllegalAccessException {
         field.setAccessible(true);
-        return field.get(container);
+        return field.get(valueContainer);
     }
 
 }

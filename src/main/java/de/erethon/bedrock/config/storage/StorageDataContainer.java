@@ -19,15 +19,33 @@ public class StorageDataContainer extends EConfig {
 
     public StorageDataContainer(File file, int configVersion) {
         super(file, configVersion);
-        loadDataFields(getClass(), "");
     }
 
-    private void loadDataFields(Class<?> clazz, String subPath) {
-        Field[] fields = clazz.getDeclaredFields();
+    /**
+     * Run the default loading process
+     */
+    protected void defaultLoadProcess() {
+        loadDataFields();
+        loadInitialValues();
+        initialize();
+        load();
+    }
+
+    /**
+     * Load the data fields from this container
+     *
+     * @since 1.2.5
+     */
+    protected void loadDataFields() {
+        loadDataFields(this, "");
+    }
+
+    private void loadDataFields(Object valueContainer, String subPath) {
+        Field[] fields = valueContainer.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(StorageData.class)) {
                 try {
-                    dataFields.add(new StorageDataField(field, subPath));
+                    dataFields.add(new StorageDataField(valueContainer, field, subPath));
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
@@ -35,18 +53,14 @@ public class StorageDataContainer extends EConfig {
             }
             if (field.isAnnotationPresent(AdditionalContainer.class)) {
                 String sub = field.getAnnotation(AdditionalContainer.class).subPath();
-                loadDataFields(field.getClass(), subPath + sub);
+                try {
+                    field.setAccessible(true);
+                    loadDataFields(field.get(valueContainer), subPath + sub);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
-    }
-
-    /**
-     * Run the default loading process
-     */
-    protected void defaultLoadProcess() {
-        loadInitialValues();
-        initialize();
-        load();
     }
 
     /**
@@ -55,8 +69,8 @@ public class StorageDataContainer extends EConfig {
     protected void loadInitialValues() {
         for (StorageDataField field : dataFields) {
             try {
-                field.loadInitialValue(this);
-            } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
+                field.loadInitialValue();
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
