@@ -63,7 +63,6 @@ public class ClassUtil {
      * @param anInterface the interface to check
      * @return true if the type implements the interface, false otherwise
      */
-    @SuppressWarnings("UnstableApiUsage")
     public static boolean isImplementing(Class<?> type, Class<?> anInterface) {
         if (!anInterface.isInterface()) {
             return false;

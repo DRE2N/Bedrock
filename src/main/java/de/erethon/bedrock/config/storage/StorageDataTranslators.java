@@ -17,8 +17,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -66,7 +66,7 @@ public class StorageDataTranslators {
         registerDataTranslator(new StorageDataTranslator<>(Collection.class, o -> {
             Collection<?> list = (Collection<?>) o;
             if (list.isEmpty()) {
-                return list;
+                return List.of();
             }
             Collection<Object> serializedList = new ArrayList<>(list.size());
             for (Object deserialized : list) {
@@ -77,7 +77,7 @@ public class StorageDataTranslators {
                 serializedList.add(serialized);
             }
             return serializedList;
-        }, o -> o instanceof Collection c ? c : Collections.emptyList()));
+        }, o -> o instanceof Collection c ? c : List.of()));
         registerDataTranslator(new StorageDataTranslator<>(Map.class, o -> {
             Map<?, ?> map = (Map<?, ?>) o;
             if (map.isEmpty()) {
