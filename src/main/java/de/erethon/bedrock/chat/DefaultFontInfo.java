@@ -203,7 +203,7 @@ public enum DefaultFontInfo {
     public static int getLength(String message) {
         // Remove component tags and bypass MiniMessage legacy char exception by temporarily replacing affected chars
         message = MessageUtil.replaceLegacyChars(message);
-        message = message.replace("<bold>", "{&l}").replace("<!bold>", "{!&l}");
+        message = message.replaceAll("<bold>|<b>", "{&l}").replaceAll("<!bold>|<!b>", "{!&l}");
         message = MessageUtil.stripTokens(message);
         message = message.replace("{&l}", "\u00A7l").replace("{!&l}", "\u00A7r");
 
