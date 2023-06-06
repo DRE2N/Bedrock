@@ -3,6 +3,7 @@ package de.erethon.bedrock.player;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,28 +31,14 @@ public class PlayerCollection implements Iterable<UUID> {
     /**
      * @param players a collection of Player, OfflinePlayer, UUID, String (player names), String (uuids) and PlayerWrapper objects
      */
-    public PlayerCollection(Collection players) {
-        for (Object player : players) {
-            if (player instanceof OfflinePlayer) {
-                uuids.add(((OfflinePlayer) player).getUniqueId());
-            } else if (player instanceof UUID) {
-                uuids.add((UUID) player);
-            } else if (player instanceof String) {
-                if (PlayerUtil.isValidUUID((String) player)) {
-                    uuids.add(UUID.fromString((String) player));
-                } else {
-                    uuids.add(PlayerUtil.getUniqueIdFromName((String) player));
-                }
-            } else if (player instanceof PlayerWrapper) {
-                uuids.add(((PlayerWrapper) player).getUniqueId());
-            }
-        }
+    public PlayerCollection(@NotNull Collection<?> players) {
+        addAll(players);
     }
 
     /**
      * @return a collection of UUIDs
      */
-    public Collection<UUID> getUniqueIds() {
+    public @NotNull Collection<UUID> getUniqueIds() {
         return new ArrayList<>(uuids);
     }
 
@@ -59,7 +46,7 @@ public class PlayerCollection implements Iterable<UUID> {
      * @param filter players to exclude
      * @return a collection of UUIDs
      */
-    public Collection<UUID> getUniqueIds(PlayerCollection filter) {
+    public @NotNull Collection<UUID> getUniqueIds(PlayerCollection filter) {
         Collection<UUID> filtered = new ArrayList<>();
         for (UUID uuid : uuids) {
             if (!filter.contains(uuid)) {
@@ -72,8 +59,8 @@ public class PlayerCollection implements Iterable<UUID> {
     /**
      * @return a collection of player name Strings
      */
-    public Collection<String> getNames() {
-        Collection<String> filtered = new ArrayList<>();
+    public @NotNull Collection<String> getNames() {
+        Collection<String> filtered = new ArrayList<>(uuids.size());
         for (UUID uuid : uuids) {
             filtered.add(Bukkit.getOfflinePlayer(uuid).getName());
         }
@@ -84,7 +71,7 @@ public class PlayerCollection implements Iterable<UUID> {
      * @param filter players to exclude
      * @return a collection of player name Strings
      */
-    public Collection<String> getNames(PlayerCollection filter) {
+    public @NotNull Collection<String> getNames(@NotNull PlayerCollection filter) {
         Collection<String> filtered = new ArrayList<>();
         for (UUID uuid : uuids) {
             String name = Bukkit.getOfflinePlayer(uuid).getName();
@@ -98,7 +85,7 @@ public class PlayerCollection implements Iterable<UUID> {
     /**
      * @return a collection of OnlinePlayers
      */
-    public Collection<Player> getOnlinePlayers() {
+    public @NotNull Collection<Player> getOnlinePlayers() {
         Collection<Player> filtered = new ArrayList<>();
         for (UUID uuid : uuids) {
             Player player = Bukkit.getPlayer(uuid);
@@ -113,7 +100,7 @@ public class PlayerCollection implements Iterable<UUID> {
      * @param filter players to exclude
      * @return a collection of OnlinePlayers
      */
-    public Collection<Player> getOnlinePlayers(PlayerCollection filter) {
+    public @NotNull Collection<Player> getOnlinePlayers(@NotNull PlayerCollection filter) {
         Collection<Player> filtered = new ArrayList<>();
         for (UUID uuid : uuids) {
             Player player = Bukkit.getPlayer(uuid);
@@ -127,8 +114,8 @@ public class PlayerCollection implements Iterable<UUID> {
     /**
      * @return a collection of OfflinePlayers
      */
-    public Collection<OfflinePlayer> getOfflinePlayers() {
-        Collection<OfflinePlayer> filtered = new ArrayList<>();
+    public @NotNull Collection<OfflinePlayer> getOfflinePlayers() {
+        Collection<OfflinePlayer> filtered = new ArrayList<>(uuids.size());
         for (UUID uuid : uuids) {
             filtered.add(Bukkit.getOfflinePlayer(uuid));
         }
@@ -139,8 +126,8 @@ public class PlayerCollection implements Iterable<UUID> {
      * @param filter players to exclude
      * @return a collection of OfflinePlayers
      */
-    public Collection<OfflinePlayer> getOfflinePlayers(PlayerCollection filter) {
-        Collection<OfflinePlayer> filtered = new ArrayList<>();
+    public @NotNull Collection<OfflinePlayer> getOfflinePlayers(@NotNull PlayerCollection filter) {
+        Collection<OfflinePlayer> filtered = new ArrayList<>(uuids.size());
         for (UUID uuid : uuids) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
             if (!filter.contains(player)) {
@@ -154,97 +141,57 @@ public class PlayerCollection implements Iterable<UUID> {
      * @param player the player
      * @return if the collection contains the player
      */
-    public boolean contains(Object player) {
-        if (player instanceof Collection) {
-            for (Object object : (Collection) player) {
-                remove(object);
+    public boolean contains(@NotNull Object player) {
+        if (player instanceof Collection<?> collection) {
+            for (Object object : collection) {
+                if (!contains(object)) {
+                    return false;
+                }
             }
             return true;
-        } else if (player instanceof OfflinePlayer) {
-            return uuids.contains(((OfflinePlayer) player).getUniqueId());
-        } else if (player instanceof UUID) {
-            return uuids.contains((UUID) player);
-        } else if (player instanceof String) {
-            if (PlayerUtil.isValidUUID((String) player)) {
-                return uuids.contains(UUID.fromString((String) player));
-            } else {
-                return uuids.contains(PlayerUtil.getUniqueIdFromName((String) player));
-            }
-        } else if (player instanceof PlayerWrapper) {
-            return uuids.contains(((PlayerWrapper) player).getUniqueId());
-        } else {
-            return false;
         }
+        return uuids.contains(getUUID(player));
     }
 
-    public boolean add(Object player) {
-        if (player instanceof Collection) {
-            for (Object object : (Collection) player) {
-                add(object);
-            }
+    public boolean add(@NotNull Object player) {
+        if (player instanceof Collection<?> collection) {
+            addAll(collection);
             return true;
-        } else if (player instanceof OfflinePlayer) {
-            return uuids.add(((OfflinePlayer) player).getUniqueId());
-        } else if (player instanceof UUID) {
-            return uuids.add((UUID) player);
-        } else if (player instanceof String) {
-            if (PlayerUtil.isValidUUID((String) player)) {
-                return uuids.add(UUID.fromString((String) player));
-            } else {
-                return uuids.add(PlayerUtil.getUniqueIdFromName((String) player));
-            }
-        } else if (player instanceof PlayerWrapper) {
-            return uuids.add(((PlayerWrapper) player).getUniqueId());
-        } else {
-            return false;
         }
+        return uuids.add(getUUID(player));
     }
 
-    public void addAll(Collection players) {
+    public void addAll(@NotNull Collection<?> players) {
         for (Object player : players) {
             add(player);
         }
     }
 
-    public void addAll(PlayerCollection players) {
+    public void addAll(@NotNull PlayerCollection players) {
         uuids.addAll(players.uuids);
     }
 
-    public void addAll(Object[] players) {
+    public void addAll(@NotNull Object[] players) {
         for (Object player : players) {
             add(player);
         }
     }
 
-    public boolean remove(Object player) {
-        if (player instanceof OfflinePlayer) {
-            return uuids.remove(((OfflinePlayer) player).getUniqueId());
-        } else if (player instanceof UUID) {
-            return uuids.remove((UUID) player);
-        } else if (player instanceof String) {
-            if (PlayerUtil.isValidUUID((String) player)) {
-                return uuids.remove(UUID.fromString((String) player));
-            } else {
-                return uuids.remove(PlayerUtil.getUniqueIdFromName((String) player));
-            }
-        } else if (player instanceof PlayerWrapper) {
-            return uuids.remove(((PlayerWrapper) player).getUniqueId());
-        } else {
-            return false;
-        }
+    public boolean remove(@NotNull Object player) {
+        return uuids.remove(getUUID(player));
     }
 
-    public void removeAll(Collection players) {
+    public void removeAll(@NotNull Collection<?> players) {
         for (Object player : players) {
             remove(player);
         }
     }
 
-    public void removeAll(PlayerCollection players) {
+    public void removeAll(@NotNull PlayerCollection players) {
         uuids.removeAll(players.uuids);
     }
 
-    public void removeAll(Object[] players) {
+    public void removeAll(@NotNull Object[] players) {
         for (Object player : players) {
             remove(player);
         }
@@ -257,6 +204,18 @@ public class PlayerCollection implements Iterable<UUID> {
     public int size() {
         return uuids.size();
     }
+
+    private UUID getUUID(Object object) {
+        return (switch (object) {
+            case UUID uuid -> uuid;
+            case OfflinePlayer offline -> offline.getUniqueId();
+            case PlayerWrapper fPlayer -> fPlayer.getUniqueId();
+            case String string -> PlayerUtil.isValidUUID(string) ? UUID.fromString(string) : PlayerUtil.getUniqueIdFromName(string);
+            default -> throw new IllegalArgumentException("Unsupported class type used");
+        });
+    }
+
+    /* Iterable */
 
     @Override
     public Iterator<UUID> iterator() {
@@ -273,11 +232,13 @@ public class PlayerCollection implements Iterable<UUID> {
         uuids.forEach(action);
     }
 
+    /* Serialization */
+
     /**
      * @return a List of Strings that can easily be used in a config
      */
-    public List<String> serialize() {
-        List<String> filtered = new ArrayList<>();
+    public @NotNull List<String> serialize() {
+        List<String> filtered = new ArrayList<>(uuids.size());
         for (UUID uuid : uuids) {
             filtered.add(uuid.toString());
         }
