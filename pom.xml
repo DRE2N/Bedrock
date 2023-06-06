@@ -66,6 +66,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.4.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <additionalOptions>--enable-preview</additionalOptions>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
