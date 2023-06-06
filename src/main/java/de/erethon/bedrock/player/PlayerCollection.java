@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @since 1.0.0
@@ -205,6 +207,10 @@ public class PlayerCollection implements Iterable<UUID> {
         return uuids.size();
     }
 
+    public boolean isEmpty() {
+        return uuids.isEmpty();
+    }
+
     private UUID getUUID(Object object) {
         return (switch (object) {
             case UUID uuid -> uuid;
@@ -230,6 +236,14 @@ public class PlayerCollection implements Iterable<UUID> {
     @Override
     public void forEach(Consumer<? super UUID> action) {
         uuids.forEach(action);
+    }
+
+    public @NotNull Stream<UUID> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
+    public @NotNull Stream<UUID> parallelStream() {
+        return StreamSupport.stream(spliterator(), true);
     }
 
     /* Serialization */
