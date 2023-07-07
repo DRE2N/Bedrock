@@ -670,6 +670,9 @@ public class MessageUtil {
                 sb.append(c);
             }
         }
+        if (found) {
+            sb.append('&');
+        }
         return sb.toString();
     }
 
