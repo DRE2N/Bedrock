@@ -34,7 +34,7 @@ public class EnumUtil {
      * @since 1.2.1
      */
     public static <E extends Enum<E>> E getEnumIgnoreCase(@Nullable Class<E> enumClass, @Nullable String valueName, @Nullable E defaultValue) {
-        return getEnum(enumClass, valueName.toUpperCase(), defaultValue);
+        return valueName == null ? defaultValue : getEnum(enumClass, valueName.toUpperCase(), defaultValue);
     }
 
     /**
