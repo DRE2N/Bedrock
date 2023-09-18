@@ -44,6 +44,8 @@ public abstract class EConfig {
             } catch (IOException | InvalidConfigurationException exception) {
                 MessageUtil.log("&4The configuration file &6" + file.getPath() + " &4seems to be erroneous.");
                 MessageUtil.log("&4This is not a bug. Try to fix the configuration file with &6http://yamllint.com&4.");
+                MessageUtil.log("&4Produced stacktrace: ");
+                exception.printStackTrace();
                 String path = file.getPath();
                 file.renameTo(new File(path + "_backup_" + System.currentTimeMillis()));
                 try {
