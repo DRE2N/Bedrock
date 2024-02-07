@@ -2,13 +2,23 @@ package de.erethon.bedrock.config;
 
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.misc.FileUtil;
+import de.erethon.bedrock.plugin.EPlugin;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.TranslationRegistry;
+import net.kyori.adventure.util.TriState;
+import org.apache.commons.lang.LocaleUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -19,6 +29,8 @@ public class MessageHandler {
 
     private String defaultLanguage = "english";
     private final Map<String, ConfigurationSection> messageFiles = new HashMap<>();
+    private final TranslationRegistry translations =
+            TranslationRegistry.create(Key.key(EPlugin.getInstance().getName().toLowerCase(), "translations"));
 
     public MessageHandler(File file) {
         if (file.isDirectory()) {
@@ -26,11 +38,46 @@ public class MessageHandler {
         } else {
             load(file);
         }
+        if (translations.hasAnyTranslations() == TriState.TRUE) {
+            GlobalTranslator.translator().addSource(translations);
+        }
     }
 
     private void load(File file) {
-        if (file.getName().endsWith(".yml")) {
-            messageFiles.put(file.getName().substring(0, file.getName().length() - 4), YamlConfiguration.loadConfiguration(file));
+        if (!file.getName().endsWith(".yml")) {
+            return;
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        messageFiles.put(file.getName().substring(0, file.getName().length() - 4), config);
+
+        String translationKey = config.getString("translationKey");
+        if (translationKey == null) {
+            return;
+        }
+        Locale locale;
+        try {
+            locale = LocaleUtils.toLocale(translationKey);
+        } catch (IllegalArgumentException e) {
+            MessageUtil.log("Invalid translation key in " + file.getName() + ": " + translationKey);
+            return;
+        }
+        for (String key : config.getKeys(false)) {
+            registerTranslations(config, locale, key);
+        }
+    }
+
+    private void registerTranslations(ConfigurationSection config, Locale locale, String path) {
+        ConfigurationSection section = config.getConfigurationSection(path);
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                registerTranslations(config, locale, path + "." + key);
+            }
+        } else {
+            String message = config.getString(path);
+            if (message == null || message.isEmpty()) {
+                return;
+            }
+            translations.register(path, locale, new MessageFormat(message));
         }
     }
 
@@ -272,7 +319,7 @@ public class MessageHandler {
      *         a placeholder, if the configuration is erroneous.
      * @since 1.2.1
      */
-    public Component message(Message message, Component... args) {
+    public Component message(Message message, ComponentLike... args) {
         return message(getDefaultLanguage(), message, args);
     }
 
@@ -287,14 +334,37 @@ public class MessageHandler {
      *         a placeholder, if the configuration is erroneous.
      * @since 1.2.1
      */
-    public Component message(String language, Message message, Component... args) {
+    public Component message(String language, Message message, ComponentLike... args) {
         Component output = message(language, message);
         int[] i = {0};
         while (i[0] < args.length) {
-            Component replace = args[i[0]] == null ? Component.text("") : args[i[0]];
+            Component replace = args[i[0]] == null ? Component.text("") : args[i[0]].asComponent();
             output = output.replaceText(b -> b.matchLiteral("&v" + ++i[0]).replacement(replace));
         }
         return output;
+    }
+
+    /**
+     * Returns the translatable message component.
+     *
+     * @param message the message
+     * @return the translatable message component
+     * @since 1.3.0
+     */
+    public TranslatableComponent translatable(Message message) {
+        return Component.translatable(message.getPath());
+    }
+
+    /**
+     * Returns the translatable message component.
+     *
+     * @param message the message
+     * @param args    the arguments
+     * @return the translatable message component
+     * @since 1.3.0
+     */
+    public TranslatableComponent translatable(Message message, ComponentLike... args) {
+        return Component.translatable(message.getPath(), args);
     }
 
 }

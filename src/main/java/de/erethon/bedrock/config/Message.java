@@ -3,6 +3,8 @@ package de.erethon.bedrock.config;
 import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.bedrock.plugin.EPlugin;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TranslatableComponent;
 
 /**
  * @since 1.0.0
@@ -106,8 +108,29 @@ public interface Message {
      *         a placeholder, if the configuration is erroneous.
      * @since 1.2.1
      */
-    default Component message(Component... args) {
+    default Component message(ComponentLike... args) {
         return getMessageHandler().message(this, args);
+    }
+
+    /**
+     * Returns the translatable message component.
+     *
+     * @return the translatable message component
+     * @since 1.3.0
+     */
+    default TranslatableComponent translatable() {
+        return getMessageHandler().translatable(this);
+    }
+
+    /**
+     * Returns the translatable message component.
+     *
+     * @param args Components to replace possible variables in the message
+     * @return the translatable message component
+     * @since 1.3.0
+     */
+    default TranslatableComponent translatable(ComponentLike... args) {
+        return getMessageHandler().translatable(this, args);
     }
 
     /**
