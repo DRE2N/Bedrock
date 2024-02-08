@@ -499,6 +499,27 @@ public class MessageUtil {
     }
 
     /**
+     * Sends a translatable Component message to a specific player (or another CommandSender).
+     *
+     * @param sender         the sender
+     * @param translationKey the message translation key
+     */
+    public static void sendTranslatable(CommandSender sender, String translationKey) {
+        sender.sendMessage(Component.translatable(translationKey, translationKey));
+    }
+
+    /**
+     * Sends a translatable Component message with args to a specific player (or another CommandSender).
+     *
+     * @param sender         the sender
+     * @param translationKey the message translation key
+     * @param args           the components args
+     */
+    public static void sendTranslatable(CommandSender sender, String translationKey, Component... args) {
+        sender.sendMessage(Component.translatable(translationKey, translationKey, args));
+    }
+
+    /**
      * Parses the string.
      * <p>
      * Translates color codes and MiniMessage tags.

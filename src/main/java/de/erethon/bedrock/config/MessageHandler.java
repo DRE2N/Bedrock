@@ -89,6 +89,8 @@ public class MessageHandler {
         }
     }
 
+    /* Getters and setters */
+
     /**
      * Returns the default language file name.
      *
@@ -363,18 +365,18 @@ public class MessageHandler {
     }
 
     /**
-     * Returns the translatable message component.
+     * Returns the translatable message component with fallback.
      *
      * @param message the message
      * @return the translatable message component
      * @since 1.3.0
      */
     public TranslatableComponent translatable(Message message) {
-        return Component.translatable(message.getPath());
+        return Component.translatable(message.getPath(), message.getPath());
     }
 
     /**
-     * Returns the translatable message component.
+     * Returns the translatable message component with fallback and args.
      *
      * @param message the message
      * @param args    the arguments
@@ -382,7 +384,7 @@ public class MessageHandler {
      * @since 1.3.0
      */
     public TranslatableComponent translatable(Message message, ComponentLike... args) {
-        return Component.translatable(message.getPath(), args);
+        return Component.translatable(message.getPath(), message.getPath(), args);
     }
 
 }
