@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @since 1.0.0
@@ -29,15 +30,22 @@ public class MessageHandler {
 
     private String defaultLanguage = "english";
     private final Map<String, ConfigurationSection> messageFiles = new HashMap<>();
-    private final TranslationRegistry translations =
-            TranslationRegistry.create(Key.key(EPlugin.getInstance().getName().toLowerCase(), "translations"));
+    private final TranslationRegistry translations;
 
     public MessageHandler(File file) {
+        this(file, UUID.randomUUID().toString());
+    }
+
+    /**
+     * @since 1.3.0
+     */
+    public MessageHandler(File file, String translationNamespace) {
         if (file.isDirectory()) {
             FileUtil.getFilesForFolder(file).forEach(this::load);
         } else {
             load(file);
         }
+        translations = TranslationRegistry.create(Key.key(translationNamespace, "translations"));
         if (translations.hasAnyTranslations() == TriState.TRUE) {
             GlobalTranslator.translator().addSource(translations);
         }
@@ -97,6 +105,16 @@ public class MessageHandler {
      */
     public void setDefaultLanguage(String defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
+    }
+
+    /**
+     * Returns the translation registry.
+     *
+     * @return the translation registry
+     * @since 1.3.0
+     */
+    public TranslationRegistry getTranslationRegistry() {
+        return translations;
     }
 
     /**

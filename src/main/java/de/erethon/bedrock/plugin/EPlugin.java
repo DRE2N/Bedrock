@@ -150,7 +150,7 @@ public class EPlugin extends JavaPlugin {
         languagesFolder.mkdirs();
         attemptToSaveBedrockMessageResource("english.yml", false);
         attemptToSaveBedrockMessageResource("german.yml", false);
-        bedrockMessageHandler = new MessageHandler(languagesFolder);
+        bedrockMessageHandler = new MessageHandler(languagesFolder, "bedrock");
     }
 
     /**
@@ -192,7 +192,7 @@ public class EPlugin extends JavaPlugin {
         attemptToSaveResource("languages/english.yml", false);
         attemptToSaveResource("languages/french.yml", false);
         attemptToSaveResource("languages/german.yml", false);
-        messageHandler = new MessageHandler(languages);
+        messageHandler = new MessageHandler(languages, getName().toLowerCase());
     }
 
     /**
