@@ -70,7 +70,7 @@ public class MessageHandler {
             return;
         }
         for (String key : config.getKeys(false)) {
-            registerTranslations(config, locale, toTranslationPath(key));
+            registerTranslations(config, locale, key);
         }
     }
 
@@ -85,10 +85,11 @@ public class MessageHandler {
             if (message == null || message.isEmpty()) {
                 return;
             }
-            if (translations.contains(path)) {
+            String translationPath = toTranslationPath(path);
+            if (translations.contains(translationPath)) {
                 return;
             }
-            translations.register(path, locale, new MessageFormat(message));
+            translations.register(translationPath, locale, new MessageFormat(message));
         }
     }
 
