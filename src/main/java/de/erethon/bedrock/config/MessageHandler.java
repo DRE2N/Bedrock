@@ -40,12 +40,12 @@ public class MessageHandler {
      * @since 1.3.0
      */
     public MessageHandler(File file, String translationNamespace) {
+        translations = TranslationRegistry.create(Key.key(translationNamespace, "translations"));
         if (file.isDirectory()) {
             FileUtil.getFilesForFolder(file).forEach(this::load);
         } else {
             load(file);
         }
-        translations = TranslationRegistry.create(Key.key(translationNamespace, "translations"));
         if (translations.hasAnyTranslations() == TriState.TRUE) {
             GlobalTranslator.translator().addSource(translations);
         }
