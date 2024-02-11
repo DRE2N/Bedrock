@@ -29,8 +29,9 @@ import java.util.UUID;
 public class MessageHandler {
 
     private String defaultLanguage = "english";
-    private final Map<String, ConfigurationSection> messageFiles = new HashMap<>();
+    private final String translationNamespace;
     private final TranslationRegistry translations;
+    private final Map<String, ConfigurationSection> messageFiles = new HashMap<>();
 
     public MessageHandler(File file) {
         this(file, UUID.randomUUID().toString());
@@ -40,7 +41,8 @@ public class MessageHandler {
      * @since 1.3.0
      */
     public MessageHandler(File file, String translationNamespace) {
-        translations = TranslationRegistry.create(Key.key(translationNamespace, "translations"));
+        this.translationNamespace = translationNamespace;
+        this.translations = TranslationRegistry.create(Key.key(translationNamespace, "translations"));
         if (file.isDirectory()) {
             FileUtil.getFilesForFolder(file).forEach(this::load);
         } else {
@@ -70,7 +72,7 @@ public class MessageHandler {
             return;
         }
         for (String key : config.getKeys(false)) {
-            registerTranslations(config, locale, key);
+            registerTranslations(config, locale, toTranslationPath(key));
         }
     }
 
@@ -83,6 +85,9 @@ public class MessageHandler {
         } else {
             String message = config.getString(path);
             if (message == null || message.isEmpty()) {
+                return;
+            }
+            if (translations.contains(path)) {
                 return;
             }
             translations.register(path, locale, new MessageFormat(message));
@@ -117,6 +122,20 @@ public class MessageHandler {
      */
     public TranslationRegistry getTranslationRegistry() {
         return translations;
+    }
+
+    /**
+     * Return the translation namespace
+     *
+     * @return the translation namespace
+     * @since 1.3.0
+     */
+    public String getTranslationNamespace() {
+        return translationNamespace;
+    }
+
+    private String toTranslationPath(String path) {
+        return translationNamespace + "." + path;
     }
 
     /**
@@ -372,7 +391,8 @@ public class MessageHandler {
      * @since 1.3.0
      */
     public TranslatableComponent translatable(Message message) {
-        return Component.translatable(message.getPath(), message.getPath());
+        String path = toTranslationPath(message.getPath());
+        return Component.translatable(path, path);
     }
 
     /**
@@ -384,7 +404,8 @@ public class MessageHandler {
      * @since 1.3.0
      */
     public TranslatableComponent translatable(Message message, ComponentLike... args) {
-        return Component.translatable(message.getPath(), message.getPath(), args);
+        String path = toTranslationPath(message.getPath());
+        return Component.translatable(path, path, args);
     }
 
 }
