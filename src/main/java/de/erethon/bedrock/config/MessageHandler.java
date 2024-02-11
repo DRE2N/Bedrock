@@ -48,9 +48,7 @@ public class MessageHandler {
         } else {
             load(file);
         }
-        if (translations.hasAnyTranslations() == TriState.TRUE) {
-            GlobalTranslator.translator().addSource(translations);
-        }
+        GlobalTranslator.translator().addSource(translations);
     }
 
     private void load(File file) {
