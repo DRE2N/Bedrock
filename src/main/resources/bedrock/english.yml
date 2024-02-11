@@ -1,6 +1,6 @@
 # Defines the language key for the file. This option is only relevant if you want to let the server
 # handle multiple languages and can be empty if you only want to use the built-in MessageHandler.
-translationKey: "en_US"
+locale: "en_US"
 # Messages
 cmd:
   doesNotExist: "&cThis command does not exist."

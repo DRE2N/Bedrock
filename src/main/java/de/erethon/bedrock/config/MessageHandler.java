@@ -1,22 +1,21 @@
 package de.erethon.bedrock.config;
 
 import de.erethon.bedrock.chat.MessageUtil;
+import de.erethon.bedrock.chat.MiniMessageTranslator;
 import de.erethon.bedrock.misc.FileUtil;
-import de.erethon.bedrock.plugin.EPlugin;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.translation.GlobalTranslator;
-import net.kyori.adventure.translation.TranslationRegistry;
-import net.kyori.adventure.util.TriState;
 import org.apache.commons.lang.LocaleUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,11 +25,11 @@ import java.util.UUID;
  * @since 1.0.0
  * @author Daniel Saukel, Fyreum
  */
-public class MessageHandler {
+public class MessageHandler extends MiniMessageTranslator {
 
     private String defaultLanguage = "english";
-    private final String translationNamespace;
-    private final TranslationRegistry translations;
+    private final Key translatorKey;
+    private final Map<String, Map<Locale, String>> translations = new HashMap<>();
     private final Map<String, ConfigurationSection> messageFiles = new HashMap<>();
 
     public MessageHandler(File file) {
@@ -41,14 +40,15 @@ public class MessageHandler {
      * @since 1.3.0
      */
     public MessageHandler(File file, String translationNamespace) {
-        this.translationNamespace = translationNamespace;
-        this.translations = TranslationRegistry.create(Key.key(translationNamespace, "translations"));
+        this.translatorKey = Key.key(translationNamespace, "translations");
         if (file.isDirectory()) {
             FileUtil.getFilesForFolder(file).forEach(this::load);
         } else {
             load(file);
         }
-        GlobalTranslator.translator().addSource(translations);
+        if (!translations.isEmpty()) {
+            GlobalTranslator.translator().addSource(this);
+        }
     }
 
     private void load(File file) {
@@ -58,15 +58,15 @@ public class MessageHandler {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         messageFiles.put(file.getName().substring(0, file.getName().length() - 4), config);
 
-        String translationKey = config.getString("translationKey");
-        if (translationKey == null) {
+        String localeKey = config.getString("locale");
+        if (localeKey == null) {
             return;
         }
         Locale locale;
         try {
-            locale = LocaleUtils.toLocale(translationKey);
+            locale = LocaleUtils.toLocale(localeKey);
         } catch (IllegalArgumentException e) {
-            MessageUtil.log("Invalid translation key in " + file.getName() + ": " + translationKey);
+            MessageUtil.log("Invalid translation key in " + file.getName() + ": " + localeKey);
             return;
         }
         for (String key : config.getKeys(false)) {
@@ -86,10 +86,7 @@ public class MessageHandler {
                 return;
             }
             String translationPath = toTranslationPath(path);
-            if (translations.contains(translationPath)) {
-                return;
-            }
-            translations.register(translationPath, locale, new MessageFormat(message));
+            translations.computeIfAbsent(translationPath, s -> new HashMap<>()).putIfAbsent(locale, message);
         }
     }
 
@@ -114,27 +111,24 @@ public class MessageHandler {
     }
 
     /**
-     * Returns the translation registry.
-     *
-     * @return the translation registry
      * @since 1.3.0
      */
-    public TranslationRegistry getTranslationRegistry() {
-        return translations;
+    @Override
+    public @NotNull Key name() {
+        return translatorKey;
     }
 
     /**
-     * Return the translation namespace
-     *
-     * @return the translation namespace
      * @since 1.3.0
      */
-    public String getTranslationNamespace() {
-        return translationNamespace;
+    @Override
+    protected @Nullable String getMiniMessageString(@NotNull String key, @NotNull Locale locale) {
+        Map<Locale, String> map = translations.get(key);
+        return map == null ? null : map.get(locale);
     }
 
     private String toTranslationPath(String path) {
-        return translationNamespace + "." + path;
+        return translatorKey.namespace() + "." + path;
     }
 
     /**
@@ -406,5 +400,4 @@ public class MessageHandler {
         String path = toTranslationPath(message.getPath());
         return Component.translatable(path, path, args);
     }
-
 }
