@@ -1,7 +1,12 @@
 package de.erethon.bedrock.chat;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -41,7 +46,16 @@ public abstract class MiniMessageTranslator implements Translator {
         } if (component.children().isEmpty()) {
             return resultingComponent;
         } else {
-            return resultingComponent.children(component.children());
+            List<Component> children = new ArrayList<>();
+            for (Component child : component.children()) {
+                if (child instanceof TranslatableComponent) {
+                    final Component translatedChild = translate((TranslatableComponent) child, locale);
+                    if (translatedChild != null) {
+                        children.add(translatedChild);
+                    }
+                }
+            }
+            return resultingComponent.children(children);
         }
     }
 
