@@ -5,6 +5,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
@@ -48,6 +49,23 @@ publishing {
         from(components["java"])
     }
 }
+
+tasks {
+    assemble {
+        dependsOn(shadowJar)
+    }
+    shadowJar {
+        archiveFileName.set("bedrock-${version}.jar")
+        dependencies {
+            include(dependency("org.bstats:bstats-base:3.0.0"))
+            include(dependency("org.bstats:bstats-bukkit:3.0.0"))
+            include(dependency("org.inventivetalent.spiget-update:bukkit:1.4.3-SNAPSHOT"))
+        }
+        relocate("org.bstats", "de.erethon.bedrock.bstats")
+        relocate("org.inventivetalent.update.spiget", "de.erethon.bedrock.spiget")
+    }
+}
+
 
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
