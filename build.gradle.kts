@@ -5,7 +5,7 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.github.goooler.shadow") version "8.1.5" // Use fork until shadow has updated to Java 21
 }
 
 repositories {
@@ -40,9 +40,9 @@ dependencies {
 }
 
 group = "de.erethon"
-version = "1.3.0"
+version = "1.3.1"
 description = "Bedrock"
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -69,6 +69,7 @@ tasks {
 
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
+    options.release.set(21)
     options.compilerArgs.add("--enable-preview")
 }
 
