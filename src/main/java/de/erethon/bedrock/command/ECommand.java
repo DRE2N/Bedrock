@@ -44,6 +44,7 @@ public abstract class ECommand implements CommandExecutor, TabCompleter {
     private boolean registerSeparately;
     private final CommandCache subCommands = new CommandCache();
     private String executionPrefix = "";
+    private Component asComponent;
 
     public void displayHelp(CommandSender sender) {
         switch (helpType) {
@@ -543,7 +544,10 @@ public abstract class ECommand implements CommandExecutor, TabCompleter {
      * @since 1.3.1
      */
     public @NotNull Component asComponent() {
-        return Component.text("&6" + getCommand() + (hasSubCommands() ? "&e*" : ""))
+        if (asComponent != null) {
+            return asComponent;
+        }
+        return asComponent = Component.text("&6" + getCommand() + (hasSubCommands() ? "&e*" : ""))
                 .clickEvent(ClickEvent.suggestCommand("/" + getExecutionPrefix() + getCommand() + " "))
                 .hoverEvent(HoverEvent.showText(
                                 BedrockMessage.HOVER_COMMAND.message(getCommand()).append(Component.newline()).append(Component.newline())
