@@ -5,6 +5,9 @@ import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.config.Message;
 import de.erethon.bedrock.misc.InfoUtil;
 import de.erethon.bedrock.misc.JavaUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -531,6 +534,27 @@ public abstract class ECommand implements CommandExecutor, TabCompleter {
             sub.setExecutionPrefix(getExecutionPrefix() + getCommand() + " ");
             sub.setAllExecutionPrefixes();
         }
+    }
+
+    /**
+     * Returns a component representing this command. This includes hover and click events.
+     *
+     * @return a formatted component
+     * @since 1.3.1
+     */
+    public @NotNull Component asComponent() {
+        return Component.text("&6" + getCommand() + (hasSubCommands() ? "&e*" : ""))
+                .clickEvent(ClickEvent.suggestCommand("/" + getExecutionPrefix() + getCommand() + " "))
+                .hoverEvent(HoverEvent.showText(
+                                BedrockMessage.HOVER_COMMAND.message(getCommand()).append(Component.newline()).append(Component.newline())
+                                        .append(BedrockMessage.HOVER_ALIASES.message(JavaUtil.toString(getAliases()))).append(Component.newline())
+                                        .append(BedrockMessage.HOVER_PERMISSION.message(getPermission())).append(Component.newline())
+                                        .append(BedrockMessage.HOVER_USAGE.message(getUsage())).append(Component.newline())
+                                        .append(BedrockMessage.HOVER_DESCRIPTION.message(getDescription())).append(Component.newline())
+                                        .append(Component.newline())
+                                        .append(BedrockMessage.HOVER_SUB_COMMANDS.message(InfoUtil.toString(getSubCommands())))
+                        )
+                );
     }
 
     /* Abstracts */

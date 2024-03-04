@@ -6,10 +6,9 @@ import de.erethon.bedrock.command.ECommand;
 import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.plugin.EPlugin;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,19 +26,22 @@ public class InfoUtil {
     private static final Component COMMA = Component.text("&c,");
     private static final Component SEPARATOR = COMMA.append(Component.text(" "));
 
-    public static void sendPaginatedHelp(CommandSender sender, CommandCache commandCache, boolean commandPrefix) {
+    public static void sendPaginatedHelp(@NotNull CommandSender sender, @NotNull CommandCache commandCache, boolean commandPrefix) {
         sendPaginatedHelp(sender, commandCache, BedrockMessage.INFO_COMMANDS.getMessage(), commandPrefix);
     }
 
-    public static void sendPaginatedHelp(CommandSender sender, CommandCache commandCache, String[] args, boolean commandPrefix) {
+    public static void sendPaginatedHelp(@NotNull CommandSender sender, @NotNull CommandCache commandCache, @NotNull String[] args,
+                                         boolean commandPrefix) {
         sendPaginatedHelp(sender, commandCache, BedrockMessage.INFO_COMMANDS.getMessage(), args, commandPrefix);
     }
 
-    public static void sendPaginatedHelp(CommandSender sender, CommandCache commandCache, String header, boolean commandPrefix) {
+    public static void sendPaginatedHelp(@NotNull CommandSender sender, @NotNull CommandCache commandCache, @NotNull String header,
+                                         boolean commandPrefix) {
         sendPaginatedHelp(sender, commandCache, header, new String[0], commandPrefix);
     }
 
-    public static void sendPaginatedHelp(CommandSender sender, CommandCache commandCache, String header, String[] args, boolean commandPrefix) {
+    public static void sendPaginatedHelp(@NotNull CommandSender sender, @NotNull CommandCache commandCache, @NotNull String header,
+                                         @NotNull String[] args, boolean commandPrefix) {
         Set<ECommand> dCommandSet = commandCache.getCommands();
         List<ECommand> sorted = dCommandSet.stream()
                 .filter(command -> command.senderHasPermissions(sender))
@@ -63,14 +65,16 @@ public class InfoUtil {
     /**
      * @since 1.2.4
      */
-    public static <T> void sendPaginatedInfo(CommandSender sender, Collection<T> information, String headerName, ComponentConverter<T> converter) {
+    public static <T> void sendPaginatedInfo(@NotNull CommandSender sender, @NotNull Collection<T> information, @NotNull String headerName,
+                                             @NotNull ComponentConverter<T> converter) {
         sendPaginatedInfo(sender, information, headerName, converter, 1);
     }
 
     /**
      * @since 1.2.4
      */
-    public static <T> void sendPaginatedInfo(CommandSender sender, Collection<T> information, String headerName, ComponentConverter<T> converter, int page) {
+    public static <T> void sendPaginatedInfo(@NotNull CommandSender sender, @NotNull Collection<T> information, @NotNull String headerName,
+                                             @NotNull ComponentConverter<T> converter, int page) {
         sendPaginatedInfo(sender, information, headerName, converter, page,
                 EPlugin.getInstance().getBedrockConfig().getInformationPerPage());
     }
@@ -78,8 +82,8 @@ public class InfoUtil {
     /**
      * @since 1.2.4
      */
-    public static <T> void sendPaginatedInfo(CommandSender sender, Collection<T> information, String headerName,
-                                             ComponentConverter<T> converter, int page, int perPage) {
+    public static <T> void sendPaginatedInfo(@NotNull CommandSender sender, @NotNull Collection<T> information, @NotNull String headerName,
+                                             @NotNull ComponentConverter<T> converter, int page, int perPage) {
         ArrayList<T> toSend = new ArrayList<>();
 
         int send = 0;
@@ -103,11 +107,11 @@ public class InfoUtil {
         }
     }
 
-    public static void sendListedHelp(CommandSender sender, CommandCache commandCache) {
+    public static void sendListedHelp(@NotNull CommandSender sender, @NotNull CommandCache commandCache) {
         sendListedHelp(sender, commandCache, BedrockMessage.INFO_COMMANDS.getMessage());
     }
 
-    public static void sendListedHelp(CommandSender sender, CommandCache commandCache, String header) {
+    public static void sendListedHelp(@NotNull CommandSender sender, @NotNull CommandCache commandCache, @NotNull String header) {
         Set<ECommand> dCommandSet = commandCache.getCommands();
         List<ECommand> sorted = dCommandSet.stream()
                 .filter(command -> command.senderHasPermissions(sender))
@@ -118,22 +122,10 @@ public class InfoUtil {
             sender.sendMessage(BedrockMessage.CMD_NO_PERMISSION.getMessage());
             return;
         }
-        ComponentConverter<ECommand> converter = cmd -> Component.text("&6" + cmd.getCommand() + (cmd.hasSubCommands() ? "&e*" : ""))
-                .clickEvent(ClickEvent.suggestCommand("/" + cmd.getExecutionPrefix() + cmd.getCommand() + " "))
-                .hoverEvent(HoverEvent.showText(
-                                BedrockMessage.HOVER_COMMAND.message(cmd.getCommand()).append(Component.newline()).append(Component.newline())
-                                        .append(BedrockMessage.HOVER_ALIASES.message(JavaUtil.toString(cmd.getAliases()))).append(Component.newline())
-                                        .append(BedrockMessage.HOVER_PERMISSION.message(cmd.getPermission())).append(Component.newline())
-                                        .append(BedrockMessage.HOVER_USAGE.message(cmd.getUsage())).append(Component.newline())
-                                        .append(BedrockMessage.HOVER_DESCRIPTION.message(cmd.getDescription())).append(Component.newline())
-                                        .append(Component.newline())
-                                        .append(BedrockMessage.HOVER_SUB_COMMANDS.message(toString(cmd.getSubCommands())))
-                        )
-                );
-        sendListedInfo(sender, sorted, header, converter);
+        sendListedInfo(sender, sorted, header, ECommand::asComponent);
     }
 
-    private static String toString(CommandCache commands) {
+    public static String toString(CommandCache commands) {
         int size = commands.getCommands().size();
         if (size == 0) {
             return BedrockMessage.HOVER_NONE.getMessage();
@@ -149,12 +141,13 @@ public class InfoUtil {
         return JavaUtil.toString(names);
     }
 
-    public static <T> void sendListedInfo(CommandSender sender, Collection<T> information, String headerName, ComponentConverter<T> converter) {
+    public static <T> void sendListedInfo(@NotNull CommandSender sender, @NotNull Collection<T> information, @NotNull String headerName,
+                                          @NotNull ComponentConverter<T> converter) {
         MessageUtil.sendCenteredMessage(sender, BedrockMessage.INFO_HEADER.getMessage(String.valueOf(information.size()), headerName));
         sendListedInfo(sender, information, converter);
     }
 
-    public static <T> void sendListedInfo(CommandSender sender, Collection<T> information, ComponentConverter<T> converter) {
+    public static <T> void sendListedInfo(@NotNull CommandSender sender, @NotNull Collection<T> information, @NotNull ComponentConverter<T> converter) {
         List<Component> messages = new ArrayList<>();
         int charLimit = Integer.MAX_VALUE - 1;
         long charAmount = 1;
