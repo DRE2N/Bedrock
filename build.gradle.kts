@@ -32,9 +32,9 @@ repositories {
 }
 
 dependencies {
-    api("org.bstats:bstats-base:3.0.0")
-    api("org.bstats:bstats-bukkit:3.0.0")
-    api("org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT")
+    api("org.bstats:bstats-base:3.0.0") { isTransitive = false }
+    compileOnly("org.bstats:bstats-bukkit:3.0.0") { isTransitive = false }
+    api("org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT") { isTransitive = false }
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
 }
