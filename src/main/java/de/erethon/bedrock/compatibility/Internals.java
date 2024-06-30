@@ -59,7 +59,7 @@ public enum Internals {
     @Override
     public String toString() {
         if (this == NEW) {
-            return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+            return Bukkit.getServer().getBukkitVersion();
         } else {
             return name();
         }
