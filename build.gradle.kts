@@ -44,16 +44,7 @@ version = "1.4.0"
 description = "Bedrock"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-    }
-}
-
 tasks {
-    assemble {
-        dependsOn(shadowJar)
-    }
     shadowJar {
         archiveFileName.set("bedrock-${version}.jar")
         dependencies {
@@ -64,8 +55,28 @@ tasks {
         relocate("org.bstats", "de.erethon.bedrock.bstats")
         relocate("org.inventivetalent.update.spiget", "de.erethon.bedrock.spiget")
     }
-}
+    javadoc {
+        options.encoding = Charsets.UTF_8.name()
+    }
+    val javadocJar by creating(Jar::class) {
+        dependsOn(javadoc)
+        archiveClassifier.set("javadoc")
+        from(javadoc)
+    }
+    val sourcesJar by creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+    processResources {
+        filteringCharset = Charsets.UTF_8.name()
+    }
 
+    assemble {
+        dependsOn(shadowJar)
+        dependsOn(javadocJar)
+        dependsOn(sourcesJar)
+    }
+}
 
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
@@ -73,6 +84,27 @@ tasks.withType<JavaCompile>() {
     options.compilerArgs.add("--enable-preview")
 }
 
-tasks.withType<Javadoc>() {
-    options.encoding = "UTF-8"
+publishing {
+    repositories {
+        maven {
+            name = "erethon"
+            url = uri("https://reposilite.fyreum.de/snapshots/")
+            credentials(PasswordCredentials::class)
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "${project.group}"
+            artifactId = "bedrock"
+            version = "${project.version}"
+
+            from(components["java"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
+        }
+    }
 }
+
