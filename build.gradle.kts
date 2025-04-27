@@ -10,6 +10,7 @@ plugins {
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven {
         url = uri("https://papermc.io/repo/repository/maven-public/")
     }
@@ -37,10 +38,16 @@ dependencies {
     api("org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT") { isTransitive = false }
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    // Databases
+    implementation("org.jdbi:jdbi3-core:3.49.1")
+    implementation("org.jdbi:jdbi3-sqlobject:3.49.1")
+    implementation("org.jdbi:jdbi3-postgres:3.49.1")
+    implementation("com.zaxxer:HikariCP:6.2.1")
+    implementation("org.postgresql:postgresql:42.7.5")
 }
 
 group = "de.erethon"
-version = "1.4.0"
+version = "1.5.7"
 description = "Bedrock"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -51,9 +58,17 @@ tasks {
             include(dependency("org.bstats:bstats-base:3.0.0"))
             include(dependency("org.bstats:bstats-bukkit:3.0.0"))
             include(dependency("org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT"))
+            include(dependency("org.jdbi:jdbi3-core:3.49.1"))
+            include(dependency("org.jdbi:jdbi3-sqlobject:3.49.1"))
+            include(dependency("org.jdbi:jdbi3-postgres:3.49.1"))
+            include(dependency("com.zaxxer:HikariCP:6.2.1"))
+            include(dependency("org.postgresql:postgresql:42.7.5"))
         }
         relocate("org.bstats", "de.erethon.bedrock.bstats")
         relocate("org.inventivetalent.update.spiget", "de.erethon.bedrock.spiget")
+        relocate("org.jdbi", "de.erethon.bedrock.jdbi")
+        relocate("com.zaxxer.hikari", "de.erethon.bedrock.hikari")
+        relocate("org.postgresql", "de.erethon.bedrock.postgresql")
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -73,8 +88,6 @@ tasks {
 
     assemble {
         dependsOn(shadowJar)
-        dependsOn(javadocJar)
-        dependsOn(sourcesJar)
     }
 }
 
@@ -102,8 +115,6 @@ publishing {
             version = "${project.version}"
 
             from(components["java"])
-            artifact(tasks["javadocJar"])
-            artifact(tasks["sourcesJar"])
         }
     }
 }
