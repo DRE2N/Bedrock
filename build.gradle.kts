@@ -101,7 +101,7 @@ publishing {
     repositories {
         maven {
             name = "erethon"
-            url = uri("https://reposilite.fyreum.de/snapshots/")
+            url = uri("https://repo.erethon.de/snapshots/")
             credentials(PasswordCredentials::class)
             authentication {
                 create<BasicAuthentication>("basic")
