@@ -88,7 +88,10 @@ public class ECommandCache extends CommandCache implements TabCompleter {
         ERootCommand labelCommand = new ERootCommand(label);
         labelCommand.setExecutor(executor);
         labelCommand.setTabCompleter(this);
-        Bukkit.getCommandMap().register(label, plugin.getName().toLowerCase(), labelCommand);
+        boolean registered = Bukkit.getCommandMap().register(label, plugin.getName().toLowerCase(), labelCommand);
+        if (!registered) {
+            plugin.getLogger().severe("Failed to register label command " + label + ". It may already be registered.");
+        }
     }
 
     private void registerCommand(JavaPlugin plugin, ECommand command) {
@@ -101,16 +104,37 @@ public class ECommandCache extends CommandCache implements TabCompleter {
             eRootCommand.setTabCompleter(command);
             return;
         }
+        if (existingCommand instanceof PluginCommand pluginCommand) {
+            pluginCommand.setExecutor(command);
+            pluginCommand.setTabCompleter(command);
+            return;
+        }
         registerRootCommand(plugin, command);
     }
 
     public void registerRootCommand(JavaPlugin plugin, ECommand eCommand) {
         List<String> aliases = new ArrayList<>(eCommand.getAliases());
         ERootCommand rootCommand = new ERootCommand(eCommand.getCommand(), eCommand.getDescription(), eCommand.getUsage(), aliases);
-        Bukkit.getCommandMap().register(label, plugin.getName().toLowerCase(), rootCommand);
+        if (!aliases.isEmpty()) {
+            rootCommand.setAliases(aliases);
+        }
+        if (eCommand.getPermission() != null) {
+            rootCommand.setPermission(eCommand.getPermission());
+        }
+        if (eCommand.getUsage() != null) {
+            rootCommand.setUsage(eCommand.getUsage());
+        }
+        if (eCommand.getDescription() != null) {
+            rootCommand.setDescription(eCommand.getDescription());
+        }
+        rootCommand.setPermission(eCommand.getPermission());
         rootCommand.setTabCompleter(eCommand);
         rootCommand.setExecutor(eCommand);
-        rootCommand.setPermission(eCommand.getPermission());
+
+        boolean registered = Bukkit.getCommandMap().register(label, plugin.getName().toLowerCase(), rootCommand);
+        if (!registered) {
+            plugin.getLogger().severe("Failed to register command " + eCommand.getCommand() + ". It may already be registered.");
+        }
     }
 
     @Override
