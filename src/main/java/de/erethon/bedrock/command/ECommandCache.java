@@ -95,6 +95,12 @@ public class ECommandCache extends CommandCache implements TabCompleter {
         if (command.getHelp() == null) {
             command.setDefaultHelp();
         }
+        Command existingCommand = Bukkit.getCommandMap().getCommand(command.getCommand());
+        if (existingCommand instanceof ERootCommand eRootCommand) {
+            eRootCommand.setExecutor(command);
+            eRootCommand.setTabCompleter(command);
+            return;
+        }
         registerRootCommand(plugin, command);
     }
 
