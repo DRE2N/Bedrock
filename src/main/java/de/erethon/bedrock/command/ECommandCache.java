@@ -8,7 +8,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.command.defaults.PluginsCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -85,9 +87,23 @@ public class ECommandCache extends CommandCache implements TabCompleter {
             }
             registerCommand(plugin, command);
         }
-        plugin.getCommand(label).setExecutor(executor);
+        Constructor<PluginCommand> pluginCommand;
+        try {
+            pluginCommand = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        pluginCommand.setAccessible(true);
+        PluginCommand pluginCommandInstance;
+        try {
+            pluginCommandInstance = pluginCommand.newInstance(label, plugin);
+        } catch (Exception e) {
+            MessageUtil.log("Couldn't register command '" + label + "' cause: " + e.getMessage());
+            return;
+        }
+        pluginCommandInstance.setExecutor(executor);
         if (tabCompletion) {
-            plugin.getCommand(label).setTabCompleter(this);
+            pluginCommandInstance.setTabCompleter(this);
         }
     }
 
@@ -95,13 +111,7 @@ public class ECommandCache extends CommandCache implements TabCompleter {
         if (command.getHelp() == null) {
             command.setDefaultHelp();
         }
-        PluginCommand pluginCommand = plugin.getCommand(command.getCommand());
-        if (pluginCommand != null) {
-            pluginCommand.setExecutor(command);
-            pluginCommand.setTabCompleter(command);
-        } else {
-            registerNewCommand(plugin, command);
-        }
+        registerNewCommand(plugin, command);
     }
 
     private void registerNewCommand(JavaPlugin plugin, ECommand command) {

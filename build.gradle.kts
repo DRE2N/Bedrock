@@ -12,7 +12,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url = uri("https://papermc.io/repo/repository/maven-public/")
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 
     maven {
@@ -36,8 +36,8 @@ dependencies {
     api("org.bstats:bstats-base:3.0.0") { isTransitive = false }
     compileOnly("org.bstats:bstats-bukkit:3.0.0") { isTransitive = false }
     api("org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT") { isTransitive = false }
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     // Databases
     implementation("org.jdbi:jdbi3-core:3.49.1")
     implementation("org.jdbi:jdbi3-sqlobject:3.49.1")
@@ -47,7 +47,7 @@ dependencies {
 }
 
 group = "de.erethon"
-version = "1.5.7"
+version = "1.5.8"
 description = "Bedrock"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
