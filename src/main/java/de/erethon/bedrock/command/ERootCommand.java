@@ -37,25 +37,7 @@ public class ERootCommand extends Command {
      */
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-        boolean success = false;
-
-        if (!testPermission(sender)) {
-            return true;
-        }
-
-        try {
-            success = executor.onCommand(sender, this, commandLabel, args);
-        } catch (Throwable ex) {
-            throw new CommandException("Unhandled exception executing command '" + commandLabel, ex);
-        }
-
-        if (!success && usageMessage.length() > 0) {
-            for (String line : usageMessage.replace("<command>", commandLabel).split("\n")) {
-                sender.sendMessage(line);
-            }
-        }
-
-        return success;
+        return executor.onCommand(sender, this, commandLabel, args);
     }
 
     /**

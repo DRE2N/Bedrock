@@ -83,25 +83,25 @@ public class ECommandCache extends CommandCache implements TabCompleter {
             if (!command.isRegisterSeparately()) {
                 continue;
             }
-            registerCommand(command);
+            registerCommand(plugin, command);
         }
         ERootCommand labelCommand = new ERootCommand(label);
         labelCommand.setExecutor(executor);
         labelCommand.setTabCompleter(this);
-        Bukkit.getCommandMap().register(label, labelCommand);
+        Bukkit.getCommandMap().register(label, plugin.getName().toLowerCase(), labelCommand);
     }
 
-    private void registerCommand(ECommand command) {
+    private void registerCommand(JavaPlugin plugin, ECommand command) {
         if (command.getHelp() == null) {
             command.setDefaultHelp();
         }
-        registerRootCommand(command);
+        registerRootCommand(plugin, command);
     }
 
-    public void registerRootCommand(ECommand eCommand) {
+    public void registerRootCommand(JavaPlugin plugin, ECommand eCommand) {
         List<String> aliases = new ArrayList<>(eCommand.getAliases());
         ERootCommand rootCommand = new ERootCommand(eCommand.getCommand(), eCommand.getDescription(), eCommand.getUsage(), aliases);
-        Bukkit.getCommandMap().register(eCommand.getCommand(), rootCommand);
+        Bukkit.getCommandMap().register(label, plugin.getName().toLowerCase(), rootCommand);
         rootCommand.setTabCompleter(eCommand);
         rootCommand.setExecutor(eCommand);
         rootCommand.setPermission(eCommand.getPermission());
