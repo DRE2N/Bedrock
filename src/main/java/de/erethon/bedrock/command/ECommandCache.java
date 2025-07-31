@@ -83,58 +83,28 @@ public class ECommandCache extends CommandCache implements TabCompleter {
             if (!command.isRegisterSeparately()) {
                 continue;
             }
-            registerCommand(plugin, command);
+            registerCommand(command);
         }
-        Constructor<PluginCommand> pluginCommand;
-        try {
-            pluginCommand = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        pluginCommand.setAccessible(true);
-        PluginCommand pluginCommandInstance;
-        try {
-            pluginCommandInstance = pluginCommand.newInstance(label, plugin);
-        } catch (Exception e) {
-            MessageUtil.log("Couldn't register command '" + label + "' cause: " + e.getMessage());
-            return;
-        }
-        pluginCommandInstance.setExecutor(executor);
-        if (tabCompletion) {
-            pluginCommandInstance.setTabCompleter(this);
-        }
+        ERootCommand labelCommand = new ERootCommand(label);
+        labelCommand.setExecutor(executor);
+        labelCommand.setTabCompleter(this);
+        Bukkit.getCommandMap().register(label, labelCommand);
     }
 
-    private void registerCommand(JavaPlugin plugin, ECommand command) {
+    private void registerCommand(ECommand command) {
         if (command.getHelp() == null) {
             command.setDefaultHelp();
         }
-        registerNewCommand(plugin, command);
+        registerRootCommand(command);
     }
 
-    private void registerNewCommand(JavaPlugin plugin, ECommand command) {
-        try {
-            final Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
-            c.setAccessible(true);
-            final PluginCommand bukkitCommand = c.newInstance(command.getCommand(), plugin);
-            if (command.getAliases() != null) {
-                bukkitCommand.setAliases(new ArrayList<>(command.getAliases()));
-            }
-            if (command.getDescription() != null) {
-                bukkitCommand.setDescription(command.getDescription());
-            }
-            if (command.getUsage() != null) {
-                bukkitCommand.setUsage(command.getUsage());
-            }
-            bukkitCommand.setPermission(command.getPermission());
-            bukkitCommand.permissionMessage(BedrockMessage.CMD_NO_PERMISSION.message());
-            bukkitCommand.setTabCompleter(command);
-            bukkitCommand.setExecutor(command);
-
-            Bukkit.getCommandMap().register(label, bukkitCommand);
-        } catch (Exception e) {
-            MessageUtil.log("Couldn't register command '" + command.getCommand() + "' cause: " + e.getMessage());
-        }
+    public void registerRootCommand(ECommand eCommand) {
+        List<String> aliases = new ArrayList<>(eCommand.getAliases());
+        ERootCommand rootCommand = new ERootCommand(eCommand.getCommand(), eCommand.getDescription(), eCommand.getUsage(), aliases);
+        Bukkit.getCommandMap().register(eCommand.getCommand(), rootCommand);
+        rootCommand.setTabCompleter(eCommand);
+        rootCommand.setExecutor(eCommand);
+        rootCommand.setPermission(eCommand.getPermission());
     }
 
     @Override

@@ -47,7 +47,7 @@ dependencies {
 }
 
 group = "de.erethon"
-version = "1.5.8"
+version = "1.5.9"
 description = "Bedrock"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
