@@ -46,7 +46,7 @@ dependencies {
 }
 
 group = "de.erethon"
-version = "1.5.16"
+version = "1.5.17"
 description = "Bedrock"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -56,7 +56,6 @@ tasks {
         dependencies {
             include(dependency("org.bstats:bstats-base:3.0.0"))
             include(dependency("org.bstats:bstats-bukkit:3.0.0"))
-            include(dependency("org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT"))
             include(dependency("org.jdbi:jdbi3-core:3.49.1"))
             include(dependency("org.jdbi:jdbi3-sqlobject:3.49.1"))
             include(dependency("org.jdbi:jdbi3-postgres:3.49.1"))
@@ -64,10 +63,6 @@ tasks {
             include(dependency("org.postgresql:postgresql:42.7.5"))
         }
         relocate("org.bstats", "de.erethon.bedrock.bstats")
-        relocate("org.inventivetalent.update.spiget", "de.erethon.bedrock.spiget")
-        relocate("org.jdbi", "de.erethon.bedrock.jdbi")
-        relocate("com.zaxxer.hikari", "de.erethon.bedrock.hikari")
-        relocate("org.postgresql", "de.erethon.bedrock.postgresql")
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
