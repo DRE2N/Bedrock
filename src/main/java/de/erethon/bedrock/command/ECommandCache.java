@@ -1,7 +1,5 @@
 package de.erethon.bedrock.command;
 
-import de.erethon.bedrock.chat.MessageUtil;
-import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.plugin.EPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,11 +7,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +24,7 @@ import java.util.Set;
 public class ECommandCache extends CommandCache implements TabCompleter {
 
     private final String label;
+    protected final Set<String> aliases = new HashSet<>();
     private final CommandExecutor executor;
     private boolean tabCompletion = true;
 
@@ -36,16 +34,37 @@ public class ECommandCache extends CommandCache implements TabCompleter {
         this.executor = new ECommandExecutor(plugin);
     }
 
+    public ECommandCache(String label, EPlugin plugin, Set<String> aliases, Set<ECommand> commands) {
+        super(commands);
+        this.label = label;
+        this.executor = new ECommandExecutor(plugin);
+        this.aliases.addAll(aliases);
+    }
+
     public ECommandCache(String label, EPlugin plugin, ECommand... commands) {
         super(commands);
         this.label = label;
         this.executor = new ECommandExecutor(plugin);
     }
 
+    public ECommandCache(String label, CommandExecutor executor, Set<String> aliases, ECommand... commands) {
+        super(commands);
+        this.label = label;
+        this.executor = executor;
+        this.aliases.addAll(aliases);
+    }
+
     public ECommandCache(String label, CommandExecutor executor, Set<ECommand> commands) {
         super(commands);
         this.label = label;
         this.executor = executor;
+    }
+
+    public ECommandCache(String label, CommandExecutor executor, Set<String> aliases, Set<ECommand> commands) {
+        super(commands);
+        this.label = label;
+        this.executor = executor;
+        this.aliases.addAll(aliases);
     }
 
     public ECommandCache(String label, CommandExecutor executor, ECommand... commands) {
@@ -82,6 +101,7 @@ public class ECommandCache extends CommandCache implements TabCompleter {
         ERootCommand labelCommand = new ERootCommand(label);
         labelCommand.setExecutor(executor);
         labelCommand.setTabCompleter(this);
+        labelCommand.setAliases(new ArrayList<>(aliases));
         boolean registered = Bukkit.getCommandMap().register(plugin.getName().toLowerCase(), labelCommand);
         if (!registered) {
             plugin.getLogger().severe("Failed to register label command " + label + ". It may already be registered.");
