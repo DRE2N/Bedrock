@@ -35,7 +35,6 @@ repositories {
 dependencies {
     api("org.bstats:bstats-base:3.0.0") { isTransitive = false }
     compileOnly("org.bstats:bstats-bukkit:3.0.0") { isTransitive = false }
-    api("org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT") { isTransitive = false }
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     // Databases
@@ -47,7 +46,7 @@ dependencies {
 }
 
 group = "de.erethon"
-version = "1.5.13"
+version = "1.5.14"
 description = "Bedrock"
 java.sourceCompatibility = JavaVersion.VERSION_21
 

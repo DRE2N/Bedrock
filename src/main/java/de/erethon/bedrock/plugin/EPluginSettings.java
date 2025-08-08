@@ -1,7 +1,6 @@
 package de.erethon.bedrock.plugin;
 
 import de.erethon.bedrock.compatibility.Internals;
-import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,11 +18,10 @@ public class EPluginSettings {
     private final int spigotMCResourceId;
     private final int bStatsResourceId;
     private final Set<Internals> internals;
-    private final VersionComparator versionComparator;
     private final boolean forcePaper;
 
     public EPluginSettings(boolean economy, boolean permissions, boolean metrics, int spigotMCResourceId,
-                           int bStatsResourceId, Set<Internals> internals, VersionComparator versionComparator,
+                           int bStatsResourceId, Set<Internals> internals,
                            boolean forcePaper) {
         this.economy = economy;
         this.permissions = permissions;
@@ -31,7 +29,6 @@ public class EPluginSettings {
         this.internals = internals;
         this.spigotMCResourceId = spigotMCResourceId;
         this.bStatsResourceId = bStatsResourceId;
-        this.versionComparator = versionComparator;
         this.forcePaper = forcePaper;
     }
 
@@ -84,12 +81,6 @@ public class EPluginSettings {
         return internals;
     }
 
-    /**
-     * @return the SpigetUpdate version comparator
-     */
-    public VersionComparator getVersionComparator() {
-        return versionComparator;
-    }
 
     /**
      * @return if this plugin should be disabled on non-paper server
@@ -117,7 +108,6 @@ public class EPluginSettings {
         private int spigotMCResourceId = -1;
         private int bStatsResourceId = -1;
         private Set<Internals> internals = Internals.INDEPENDENT;
-        private VersionComparator versionComparator = VersionComparator.SEM_VER;
         private boolean forcePaper = false;
 
         Builder() {
@@ -158,11 +148,6 @@ public class EPluginSettings {
             return this;
         }
 
-        public Builder versionComparator(VersionComparator versionComparator) {
-            this.versionComparator = versionComparator;
-            return this;
-        }
-
         /**
          * @since 1.2.1
          */
@@ -173,7 +158,7 @@ public class EPluginSettings {
 
         public EPluginSettings build() {
             return new EPluginSettings(economy, permissions, metrics, spigotMCResourceId, bStatsResourceId,
-                    internals, versionComparator, forcePaper);
+                    internals, forcePaper);
         }
     }
 

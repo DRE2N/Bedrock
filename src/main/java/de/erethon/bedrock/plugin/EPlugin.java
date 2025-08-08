@@ -14,8 +14,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.inventivetalent.update.spiget.SpigetUpdate;
-import org.inventivetalent.update.spiget.UpdateCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,21 +66,6 @@ public class EPlugin extends JavaPlugin {
 
         if (settings.usesMetrics()) {
             metrics = new Metrics(this, settings.getBStatsResourceId());
-        }
-        if (settings.isSpigotMCResource() && bedrockConfig.isUpdaterEnabled()) {
-            SpigetUpdate updater = new SpigetUpdate(this, settings.getSpigotMCResourceId());
-            updater.setVersionComparator(settings.getVersionComparator());
-            updater.checkForUpdate(new UpdateCallback() {
-                @Override
-                public void updateAvailable(String newVersion, String downloadUrl, boolean hasDirectDownload) {
-                    MessageUtil.log(EPlugin.this, "A new version of " + getName() + " is available (" + newVersion + "). Download it here: " + downloadUrl);
-                }
-
-                @Override
-                public void upToDate() {
-                    MessageUtil.log(EPlugin.this, "The plugin is up to date.");
-                }
-            });
         }
         MessageUtil.log("&f[&9##########&f[&6" + getName() + "&f]&9##########&f]");
         MessageUtil.log("&fInternals: [" + (settings.getInternals().contains(compat.getInternals()) ? "&a" : "&4") + compat.getInternals() + "&f]");
