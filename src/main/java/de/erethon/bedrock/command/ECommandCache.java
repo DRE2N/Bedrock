@@ -79,18 +79,18 @@ public class ECommandCache extends CommandCache implements TabCompleter {
      * @param plugin the plugin that registers the command.
      */
     public void register(JavaPlugin plugin) {
-        for (ECommand command : commands) {
-            if (!command.isRegisterSeparately()) {
-                continue;
-            }
-            registerCommand(plugin, command);
-        }
         ERootCommand labelCommand = new ERootCommand(label);
         labelCommand.setExecutor(executor);
         labelCommand.setTabCompleter(this);
         boolean registered = Bukkit.getCommandMap().register(label, plugin.getName().toLowerCase(), labelCommand);
         if (!registered) {
             plugin.getLogger().severe("Failed to register label command " + label + ". It may already be registered.");
+        }
+        for (ECommand command : commands) {
+            if (!command.isRegisterSeparately()) {
+                continue;
+            }
+            registerCommand(plugin, command);
         }
     }
 
