@@ -7,6 +7,7 @@ import de.erethon.bedrock.compatibility.CompatibilityHandler;
 import de.erethon.bedrock.config.BedrockConfig;
 import de.erethon.bedrock.config.BedrockMessage;
 import de.erethon.bedrock.config.MessageHandler;
+import net.kyori.adventure.translation.GlobalTranslator;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
@@ -129,6 +130,9 @@ public class EPlugin extends JavaPlugin {
      * @since 1.2.1
      */
     public void reloadBedrockMessageHandler() {
+        if (bedrockMessageHandler != null) {
+            GlobalTranslator.translator().removeSource(bedrockMessageHandler);
+        }
         languagesFolder = new File(getDataFolder().getParent(), "/Bedrock/languages");
         languagesFolder.mkdirs();
         attemptToSaveBedrockMessageResource("english.yml", false);
@@ -170,6 +174,9 @@ public class EPlugin extends JavaPlugin {
      * Reloads the language files.
      */
     public void reloadMessageHandler() {
+        if (messageHandler != null) {
+            GlobalTranslator.translator().removeSource(messageHandler);
+        }
         File languages = new File(getDataFolder(), "languages");
         languages.mkdirs();
         attemptToSaveResource("languages/english.yml", false);
